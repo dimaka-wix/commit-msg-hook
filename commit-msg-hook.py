@@ -104,4 +104,4 @@ if __name__ == "__main__":
     # msg = "Added a in b from c"
     # check_commit_msg(msg)
     print(f">>>> {sys.argv}")
-    raise Exception()
+    raise Exception(">>>>" + sys.argv)
