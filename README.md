@@ -37,7 +37,7 @@ Sample ```.pre-commit-config.yaml```
 * _Use the description to explain what and why vs how_
 * _Press **Shift+Enter** to create a new line and to write more characters then vscode lets you_
 * _**Separate subject from body with a blank line!**_
-* _Use **In/From** to add the place where the change was made (file/component)_
+* _Use **In/From** format in suject line to add the place where the change was made (file/component)_
 
 
 #### Example:
