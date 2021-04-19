@@ -1,0 +1,8 @@
+-   id: commit-msg-hook
+    name: commit-msg-hook
+    description: Checks if commit message matches the chaos-hub commit rules
+    entry: commit-msg-hook
+    language: python
+    args: []
+    types: [python]
+  
