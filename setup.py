@@ -11,12 +11,11 @@ setup(
     author_email="dimadk787@gmail.com",
     version="0.1.0",
 
-    # The description that appears when someone searches for the library on https://pypi.org/search
+    # The description that appears on https://pypi.org/search
     description="Checks if commit message matches the chaos-hub commit rules",
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/DimaKarpukhin/commit-msg-hook.git",
-
 
     # The packages I want "build."
     packages=find_packages(),
