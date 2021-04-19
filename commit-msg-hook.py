@@ -101,7 +101,5 @@ def __check_body(body):
 
 
 if __name__ == "__main__":
-    # msg = "Added a in b from c"
-    # check_commit_msg(msg)
-    print(f">>>> {sys.argv}")
-    raise Exception(">>>>" + sys.argv)
+    msg = sys.argv[1]
+    check_commit_msg(msg)
