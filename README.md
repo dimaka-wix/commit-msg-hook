@@ -36,7 +36,7 @@ Sample ```.pre-commit-config.yaml```
   - _**Merge** branch ..._
 * _Use the description to explain what and why vs how_
 * _Press **Shift+Enter** to create a new line and to write more characters then vscode lets you_
-* _**Separate subject from body with a blank line**_
+* _**Separate subject from body with a blank line!**_
 * _Use **In/From** to add the place where the change was made (file/component)_
 
 
