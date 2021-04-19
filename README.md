@@ -4,11 +4,11 @@ Checks if commit message matches the chaos-hub commit rules
 ```
 pip install commit-msg-hook
 ```
-### As a pre-commit hook 
+### Using commit-msg-hook with pre-commit 
 
 See [pre-commit](https://pre-commit.com/) for instructions
 
-Sample ```.pre-commit-config.yaml```
+Add this to your ```.pre-commit-config.yaml```
 ```
 -   repo: https://github.com/DimaKarpukhin/commit-msg-hook.git
     rev: "0.1.0"
