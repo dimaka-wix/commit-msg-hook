@@ -48,10 +48,7 @@ Refactor Z function in X file from Y component
 - Add ...
 - Update ...
  ```
- ### Bypasseing the commit-msg-hook
-```git commit -m "Your massage" -n
-```
+ ### Bypass the hook
+```git commit -m "Your massage" -n```
  or 
- ```
- git commit -m "Your massage" --no-verify
- ```
+ ```git commit -m "Your massage" --no-verify```
