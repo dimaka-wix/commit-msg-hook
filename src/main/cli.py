@@ -69,7 +69,7 @@ def __check_lenth(msg, delimiter):
     msg_length = len(msg)
     if msg_length > delimiter:
         print(f"{RED}- commit message is too long:\
-                {msg_length} > {delimiter}")
+                {msg_length} > {delimiter}{RESET}")
         sys.exit(1)
 
 
