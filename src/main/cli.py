@@ -1,6 +1,14 @@
 import color
 import sys
+from typing import List
+from typing import Optional
 MSG_MAX_LENGTH = 72
+
+
+def main(argv: Optional[str] = None) -> None:
+    if argv is None:
+        argv = sys.argv[1]
+    check_commit_msg(argv)
 
 
 def check_commit_msg(msg=None):
@@ -103,6 +111,4 @@ def __check_body(body):
 
 
 if __name__ == "__main__":
-    msg = sys.argv[1]
-    # msg = "Add a in b from c\n\n - Fix a"
-    check_commit_msg(msg)
+    main()
