@@ -18,9 +18,11 @@ BLUEFONE = FILLER+'\033[34m'
 
 
 def main(argv: Optional[str] = None) -> None:
+    print(f">>>>> argv_1: [{argv}]")
     if argv is None:
         argv = sys.argv[1]
-    check_commit_msg("Add a in b from c\n\n - Fix a")
+    print(f">>>>> argv_2: [{argv}]")
+    check_commit_msg(argv)
 
 
 def check_commit_msg(msg=None):
