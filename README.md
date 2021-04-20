@@ -11,15 +11,15 @@ See [pre-commit](https://pre-commit.com/) for instructions
 Add this to your ```.pre-commit-config.yaml```
 ```
 -   repo: https://github.com/DimaKarpukhin/commit-msg-hook.git
-    rev: "0.1.0"
+    rev: "0.0.1"
     hooks:
     -   id: commit-msg-hook
         args: [--m]  
         stages: [commit-msg]
  ```   
- ### Commit Rules:
+ ### Commit Rules
 
-* _Write up to 72 characters(preventing ellipsis in git)_
+* _Write up to **72** characters(preventing ellipsis in git)_
 * _Capitalise the subject line_
 * _Do not end the subject line with a period_
 * _Use the imperative mood(e.g. **Add** instead of **Added**)_
@@ -40,7 +40,7 @@ Add this to your ```.pre-commit-config.yaml```
 * _Use **In/From** format in suject line to add the place where the change was made (file/component)_
 
 
-#### Example:
+#### Example
 ```
 Refactor Z function in X file from Y component
 
@@ -48,3 +48,5 @@ Refactor Z function in X file from Y component
 - Add ...
 - Update ...
  ```
+ ### Bypasseing the commit-msg-hook
+```git commit -m "Your massage" -n``` or ```git commit -m "Your massage" --no-verify```
