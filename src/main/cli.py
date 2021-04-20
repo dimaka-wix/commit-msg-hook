@@ -1,6 +1,6 @@
 import sys
 from typing import Optional
-MSG_MAX_LENGTH = 72
+MSG_MAX_LENGTH = 500
 RESET = "\033[0;0m"
 VIOLET = RESET+'\033[35m'
 BLUE = RESET+'\033[34m'
@@ -20,9 +20,11 @@ BLUEFONE = FILLER+'\033[34m'
 def main(argv: Optional[str] = None) -> None:
     if argv is None:
         argv = sys.argv[0]
+    print(f">>>>> argv[0]: [{argv}]")
     with open(argv, "r", encoding="utf-8") as commit_msg:
         msg = commit_msg.read()
     print(f">>>>> commit_msg: [{msg}]")
+    print(f">>>>> argv[1]: [{sys.argv[1]}]")
     check_commit_msg(msg)
 
 
