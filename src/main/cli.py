@@ -1,4 +1,4 @@
-import color
+# import color
 import sys
 from typing import Optional
 MSG_MAX_LENGTH = 72
@@ -13,28 +13,28 @@ def main(argv: Optional[str] = None) -> None:
 def check_commit_msg(msg=None):
     __validate_input(msg)
     __check_msg_convention(msg)
-    print(f"{color.GREEN}- commit message matches the chaos-hub commit rules!\
-            {color.RESET}")
+    print(f"- commit message matches the chaos-hub commit rules!\
+            ")
 
 
 def show_example():
-    print(f"{color.GREENFONE}EXAMPLE:\n{color.GREEN}Refactor{color.BLUE}\
- Z function {color.GREEN}in{color.BLUE}\
- X file {color.GREEN}from {color.BLUE}Y component\n\
+    print(f"EXAMPLE:\n\
+ Z function in\
+ X file from Y component\n\
  < empty line >\n\
- -{color.GREEN} Fix {color.BLUE}... 1\n\
- -{color.GREEN} Fix {color.BLUE}... 2\n\
- -{color.GREEN} Fix {color.BLUE}... 3\n{color.RESET}")
+ - Fix ... 1\n\
+ - Fix ... 2\n\
+ - Fix ... 3\n")
 
 
 def __validate_input(input_arg):
     if input_arg is None or not input_arg:
         raise ValueError(
-            f"{color.RED}- commit message can't be empty!{color.RESET}")
+            f"- commit message can't be empty!")
         sys.exit(1)
     if not isinstance(input_arg, str):
         raise TypeError(
-            f"{color.RED}- commit message must be a string!{color.RESET}")
+            f"- commit message must be a string!")
         sys.exit(1)
 
 
@@ -49,7 +49,7 @@ def __check_msg_convention(msg):
 def __check_lenth(msg, delimiter):
     msg_length = len(msg)
     if msg_length > delimiter:
-        print(f"{color.RED}- commit message is too long:\
+        print(f"- commit message is too long:\
                 {msg_length} > {delimiter}")
         sys.exit(1)
 
@@ -69,36 +69,36 @@ def __check_prefix(msg, segment=""):
     prefixes = ["Fix", "Add", "Refactor", "Update", "Remove",
                 "Release", "Move", "Tslint", "Rename", "Merge"]
     if msg[0].islower():
-        print(f"{color.RED}- capitalise the {segment}{color.RESET}")
+        print(f"- capitalise the {segment}")
         show_example()
         sys.exit(1)
     if not is_valid_prefix:
-        print(f"{color.RED}- replace {segment} prefix\
- with one of the following:\n  {prefixes}{color.RESET}")
+        print(f"- replace {segment} prefix\
+ with one of the following:\n  {prefixes}")
         show_example()
         sys.exit(1)
 
 
 def __check_in_from_format(subj, segment=""):
     if "in" not in subj or "from" not in subj:
-        print(f"{color.RED}- use {color.GREEN}in/from {color.RED}format in {segment}\
- to add the place where the change was made (file/component){color.RESET}")
+        print(f"- use in/from format in {segment}\
+ to add the place where the change was made (file/component)")
         show_example()
         sys.exit(1)
 
 
 def __check_ending(msg, segment=""):
     if msg.rstrip().endswith("."):
-        print(f"{color.RED}- do not end the {segment} with a period\
-                {color.RESET}")
+        print(f"- do not end the {segment} with a period\
+                ")
         show_example()
         sys.exit(1)
 
 
 def __check_body(body):
     if body[0].strip() != "":
-        print(f"{color.RED} - separate subject from body with a blank line\
-                {color.RESET}")
+        print(f" - separate subject from body with a blank line\
+                ")
         show_example()
         sys.exit(1)
     segment = "message body lines"
@@ -111,4 +111,4 @@ def __check_body(body):
 
 if __name__ == "__main__":
     msg = "Add a in b from c\n\n - Fix a"
-    main()
+    main(msg)
