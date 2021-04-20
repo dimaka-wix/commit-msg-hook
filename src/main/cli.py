@@ -45,7 +45,7 @@ def show_example():
 
 def __validate_input(input_arg):
     if input_arg is None or not input_arg:
-        raise ValueError(
+        print(
             f"{RED}- commit message can't be empty!{RESET}")
         sys.exit(1)
     if not isinstance(input_arg, str):
