@@ -1,5 +1,6 @@
 # commit-msg-hook
-Checks if commit message matches the chaos-hub commit rules
+This hook is made as custom plugins under the pre-commit hook framework and checks if commit message matches the chaos-hub team commit rules.
+
 ### Installation 
 ```
 pip install commit-msg-hook
