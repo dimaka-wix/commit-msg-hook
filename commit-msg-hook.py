@@ -96,10 +96,13 @@ def __check_body(body):
         sys.exit(1)
     segment = "message body lines"
     for row in body[1:]:
+        row = row.strip()
+        row = row[1:].lstrip() if row[0] == "-" else row
         __check_prefix(row, segment)
         __check_ending(row, segment)
 
 
 if __name__ == "__main__":
     msg = sys.argv[1]
+    # msg = "Add a in b from c\n\n - Fix a"
     check_commit_msg(msg)
