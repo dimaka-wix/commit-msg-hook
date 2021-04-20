@@ -17,14 +17,18 @@ GREENFONE = FILLER+'\033[32m'
 BLUEFONE = FILLER+'\033[34m'
 
 
-def main():
+def main(argv=None):
+    if argv is not None:
+        msg = argv
+    else:
+        with open(sys.argv[0], "r", encoding="utf-8") as commit_msg:
+            msg = commit_msg.read()
     # if argv is None:
     #     argv = sys.argv[0]
     # print(f">>>>> argv[0]: [{argv}]")
-    with open(sys.argv[0], "r", encoding="utf-8") as commit_msg:
-        msg = commit_msg.read()
     print(f">>>>> commit_msg: [{msg}]")
     check_commit_msg(msg)
+    return 1
 
 
 def check_commit_msg(msg=None):
@@ -129,4 +133,4 @@ def __check_body(body):
 
 if __name__ == "__main__":
     msg = "Add a in b from c\n\n - Fix a"
-    exit(main())
+    main()
