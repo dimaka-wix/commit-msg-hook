@@ -1,6 +1,5 @@
 import color
 import sys
-from typing import List
 from typing import Optional
 MSG_MAX_LENGTH = 72
 
