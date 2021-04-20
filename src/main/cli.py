@@ -49,7 +49,7 @@ def __validate_input(input_arg):
             f"{RED}- commit message can't be empty!{RESET}")
         sys.exit(1)
     if not isinstance(input_arg, str):
-        raise TypeError(
+        print(
             f"{RED}- commit message must be a string!{RESET}")
         sys.exit(1)
 
