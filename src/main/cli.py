@@ -15,15 +15,12 @@ BLACKFONE = FILLER+'\033[30m'
 WHITEFONE = FILLER+'\033[37m'
 GREENFONE = FILLER+'\033[32m'
 BLUEFONE = FILLER+'\033[34m'
-PASSED = FILLER+'\033[36m'
-FAILED = FILLER+'\033[31m'
-WARNING = FILLER+'\033[33m'
 
 
 def main(argv: Optional[str] = None) -> None:
     if argv is None:
         argv = sys.argv[1]
-    check_commit_msg(argv)
+    check_commit_msg("Add a in b from c\n\n - Fix a")
 
 
 def check_commit_msg(msg=None):
@@ -31,6 +28,7 @@ def check_commit_msg(msg=None):
     __check_msg_convention(msg)
     print(f"{GREEN}- commit message matches the chaos-hub commit rules!\
             {RESET}")
+    sys.exit(0)
 
 
 def show_example():
@@ -39,8 +37,8 @@ def show_example():
  X file {GREEN}from {BLUE}Y component\n\
  < empty line >\n\
  -{GREEN} Fix {BLUE}... 1\n\
- -{GREEN} Fix {BLUE}... 2\n\
- -{GREEN} Fix {BLUE}... 3\n{RESET}")
+ -{GREEN} Add {BLUE}... 2\n\
+ -{GREEN} Remove {BLUE}... 3\n{RESET}")
 
 
 def __validate_input(input_arg):
