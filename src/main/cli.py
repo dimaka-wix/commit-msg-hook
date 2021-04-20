@@ -111,4 +111,5 @@ def __check_body(body):
 
 
 if __name__ == "__main__":
+    msg = "Add a in b from c\n\n - Fix a"
     main()
