@@ -50,9 +50,9 @@ Refactor Z function in X file from Y component
  ```
  ### Bypass the hook
 ```
-git commit -m "Your massage" --no-verify
+git commit -m "Your message" --no-verify
 ``` 
 or
 ```
-git commit -m "Your massage" -n
+git commit -m "Your message" -n
 ```
