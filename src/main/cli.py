@@ -17,7 +17,7 @@ GREENFONE = FILLER+'\033[32m'
 BLUEFONE = FILLER+'\033[34m'
 
 
-def main(argv: Optional[str] = None) -> None:
+def main():
     # if argv is None:
     #     argv = sys.argv[0]
     # print(f">>>>> argv[0]: [{argv}]")
