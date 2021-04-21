@@ -19,9 +19,11 @@ BLUEFONE = FILLER+'\033[34m'
 def main(argv=None):
     if argv is not None:
         msg = argv
+        print(f">>>>> from if msg: [{msg}]")
     else:
         with open(sys.argv[0], "r", encoding="utf-8") as commit_msg:
             msg = commit_msg.read()
+        print(f">>>>> from else msg: [{msg}]")
     # if argv is None:
     #     argv = sys.argv[0]
     # print(f">>>>> argv[0]: [{argv}]")
