@@ -75,8 +75,8 @@ def __check_msg_parts(msg, max_msg_length):
 def __check_lenth(msg, msg_limit):
     msg_length = len(msg)
     if msg_length > msg_limit:
-        print(f"{RED}- commit message is too long:\
-                {msg_length} > {msg_limit}{DEFAULT}")
+        print(f"{RED}- commit message is too long: {msg_length} > {msg_limit}\
+                {DEFAULT}")
         sys.exit(1)
 
 
