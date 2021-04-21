@@ -45,6 +45,7 @@ def show_example():
 
 
 def __extract_args():
+    max_msg_length = MAX_MSG_LENGTH
     commit_msg_path = sys.argv[1]
     if len(sys.argv) > 2:
         commit_msg_path = sys.argv[2]
