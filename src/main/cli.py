@@ -1,4 +1,5 @@
 import sys
+
 MSG_MAX_LENGTH = 500
 RESET = "\033[0;0m"
 VIOLET = RESET+'\033[35m'
@@ -17,27 +18,16 @@ BLUEFONE = FILLER+'\033[34m'
 
 
 def main(argv=None):
-    if argv is not None:
-        msg = argv
-        print(f">>>>> inside of if   msg:[{msg}]")
-    else:
-        print(f">>>>> argv[0]: [{sys.argv}]")
-        with open(sys.argv[1], "r") as commit_msg:
-            msg = commit_msg.read()
-        print(f">>>>> inside of else msg: [{msg}]")
-        print(f">>>>> inside of else commit_msg: [{commit_msg}]")
-    # if argv is None:
-    #     argv = sys.argv[0]
-    # print(f">>>>> argv[0]: [{argv}]")
-    print(f">>>>> before the end msg: [{msg}]")
-    check_commit_msg(msg)
-    return 1
+    if argv is None:
+        with open(sys.argv[1], "r", encoding="utf-8") as commit_msg:
+            argv = commit_msg.read()
+    check_commit_msg(argv)
 
 
 def check_commit_msg(msg=None):
     __validate_input(msg)
     __check_msg_convention(msg)
-    print(f"{GREEN}- commit message matches the chaos-hub commit rules !\
+    print(f"{GREEN}- commit message matches the chaos-hub commit rules!\
             {RESET}")
     sys.exit(0)
 
@@ -71,7 +61,7 @@ def __check_msg_convention(msg):
         __check_body(msg_rows[1:])
 
 
-def __check_lenth(msg, delimiter):
+def __check_lenth(msg, delimiter=):
     msg_length = len(msg)
     if msg_length > delimiter:
         print(f"{RED}- commit message is too long:\
@@ -135,5 +125,4 @@ def __check_body(body):
 
 
 if __name__ == "__main__":
-    msg = "\n\n - Fix a"
     main()
