@@ -33,7 +33,7 @@ def main(argv=None):
 def check_commit_msg(msg=None):
     __validate_input(msg)
     __check_msg_convention(msg)
-    print(f"{GREEN}- commit message matches the chaos-hub commit rules!\
+    print(f"{GREEN}- commit message matches the chaos-hub commit rules !\
             {RESET}")
     sys.exit(0)
 
