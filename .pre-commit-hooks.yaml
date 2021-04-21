@@ -3,6 +3,6 @@
     description: Checks if commit message matches the chaos-hub commit rules
     entry: commit-msg-hook
     language: python
-    args: [.git/COMMIT_EDITMSG]
+    args: []
     types: [python]
   
