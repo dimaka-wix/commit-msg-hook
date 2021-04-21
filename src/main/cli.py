@@ -19,15 +19,16 @@ BLUEFONE = FILLER+'\033[34m'
 def main(argv=None):
     if argv is not None:
         msg = argv
-        print(f">>>>> from if msg: [{msg}]")
+        print(f">>>>> inside if msg: [{msg}]")
     else:
+        print(f">>>>> argv[0]: [{sys.argv[0]}]")
         with open(sys.argv[0], "r", encoding="utf-8") as commit_msg:
             msg = commit_msg.read()
-        print(f">>>>> from else msg: [{msg}]")
+        print(f">>>>> inside else msg: [{msg}]")
     # if argv is None:
     #     argv = sys.argv[0]
     # print(f">>>>> argv[0]: [{argv}]")
-    print(f">>>>> commit_msg: [{msg}]")
+    print(f">>>>> outside msg: [{msg}]")
     check_commit_msg(msg)
     return 1
 
@@ -38,6 +39,9 @@ def check_commit_msg(msg=None):
     print(f"{GREEN}- commit message matches the chaos-hub commit rules !\
             {RESET}")
     sys.exit(0)
+
+
+ß
 
 
 def show_example():
