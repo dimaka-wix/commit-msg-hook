@@ -19,6 +19,10 @@ Add this to your ```.pre-commit-config.yaml```
         # args is optional, the default length limit is 72
         args: [--max-msg-length=<number>]
  ```   
+ Update the latest release if you are not sure
+  ```
+  pre-commit autoupdate
+  ```
  ### Commit Rules
 
 * _Write up to **72** characters(preventing ellipsis in git)_
