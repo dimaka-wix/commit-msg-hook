@@ -23,7 +23,7 @@ def main(argv=None):
     else:
         print(f">>>>> argv[0]: [{sys.argv}]")
         with open(sys.argv[0], "r", encoding="utf-8") as commit_msg:
-            msg = commit_msg.read()
+            msg = commit_msg
         print(f">>>>> inside of else msg: [{msg}]")
     # if argv is None:
     #     argv = sys.argv[0]
