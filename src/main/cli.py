@@ -1,7 +1,7 @@
 import sys
-import color
 
 MSG_MAX_LENGTH = 72
+
 DEFAULT = "\033[0;0m"
 VIOLET = DEFAULT+'\033[35m'
 BLUE = DEFAULT+'\033[34m'
@@ -29,7 +29,7 @@ def main(argv=None):
 def check_commit_msg(msg=None):
     __validate_input(msg)
     __check_msg_convention(msg)
-    print(f"{color.GREEN}- commit message matches the chaos-hub commit rules!\
+    print(f"{GREEN}- commit message matches the chaos-hub commit rules!\
             {DEFAULT}")
     sys.exit(0)
 
