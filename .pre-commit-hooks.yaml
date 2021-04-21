@@ -3,5 +3,5 @@
     description: Checks if commit message matches the chaos-hub commit rules
     entry: commit-msg-hook
     language: python
-    types: [text, python]
+    types: [text]
   
