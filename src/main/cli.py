@@ -29,7 +29,7 @@ def main(argv=None):
     # if argv is None:
     #     argv = sys.argv[0]
     # print(f">>>>> argv[0]: [{argv}]")
-    print(f">>>>> outside of msg: [{msg}]")
+    print(f">>>>> before the end msg: [{msg}]")
     check_commit_msg(msg)
     return 1
 
