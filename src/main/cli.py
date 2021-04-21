@@ -126,4 +126,4 @@ def __check_body(body):
 
 
 if __name__ == "__main__":
-    main("Add ")
+    main()
