@@ -1,5 +1,4 @@
 import sys
-from typing import Optional
 MSG_MAX_LENGTH = 500
 RESET = "\033[0;0m"
 VIOLET = RESET+'\033[35m'
