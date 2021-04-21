@@ -22,7 +22,7 @@ def main(argv=None):
         print(f">>>>> inside of if msg: [{msg}]")
     else:
         print(f">>>>> argv[0]: [{sys.argv}]")
-        with open(sys.argv[0], "r") as commit_msg:
+        with open(sys.argv[1], "r") as commit_msg:
             msg = commit_msg.read()
         print(f">>>>> inside of else msg: [{msg}]")
         print(f">>>>> inside of else commit_msg: [{commit_msg}]")
