@@ -32,14 +32,14 @@ Add this to your ```.pre-commit-config.yaml```
   - _**Update** ..._
   - _**Remove** ..._
   - _**Release** ..._
-  - _**Move** ... to ..._ 
-  - _**Tslint** ... in ..._
+  - _**Move** ..._ 
+  - _**Tslint** ..._
   - _**Rename** ..._
-  - _**Merge** branch ..._
+  - _**Merge** ..._
 * _Use the description to explain what and why vs how_
 * _Press **Shift+Enter** to create a new line and to write more characters then vscode lets you_
 * _**Separate subject from body with a blank line!**_
-* _Use **In/From** format in suject line to add the place where the change was made (file/component)_
+* _Use **in/from** format **in suject line** to add the place where the change was made (file/component)_
 
 
 #### Example
