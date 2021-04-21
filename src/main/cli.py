@@ -19,7 +19,7 @@ BLUEFONE = FILLER+'\033[34m'
 def main(argv=None):
     if argv is not None:
         msg = argv
-        print(f">>>>> inside of if msg:   [{msg}]")
+        print(f">>>>> inside of if msg:[{msg}]")
     else:
         print(f">>>>> argv[0]: [{sys.argv}]")
         with open(sys.argv[1], "r") as commit_msg:
