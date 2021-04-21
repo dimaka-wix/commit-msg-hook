@@ -12,12 +12,12 @@ See [pre-commit](https://pre-commit.com/) for instructions
 Add this to your ```.pre-commit-config.yaml```
 ```
 -   repo: https://github.com/DimaKarpukhin/commit-msg-hook.git
-    rev: v0.0.9
+    rev: v0.1.4
     hooks:
     -   id: commit-msg-hook
-        always_run: true
-        args: [.git/COMMIT_EDITMSG]
         stages: [commit-msg]
+        # args is optional, the default length limit is 72
+        args: [--max-msg-length=<number>]
  ```   
  ### Commit Rules
 

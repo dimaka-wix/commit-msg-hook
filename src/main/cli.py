@@ -1,6 +1,6 @@
 import sys
 
-MSG_MAX_LENGTH = 72
+MAX_MSG_LENGTH = 72
 
 DEFAULT = "\033[0;0m"
 VIOLET = DEFAULT+'\033[35m'
@@ -20,15 +20,15 @@ BLUEFONE = FILLER+'\033[34m'
 
 def main(argv=None):
     if argv is None:
-        print(f"argv >>>> {sys.argv}")
-        with open(sys.argv[0], "r", encoding="utf-8") as commit_msg:
+        commit_msg_path, max_msg_length = __extract_args()
+        with open(commit_msg_path, "r", encoding="utf-8") as commit_msg:
             argv = commit_msg.read()
-    check_commit_msg(argv)
+    check_commit_msg(argv, max_msg_length)
 
 
-def check_commit_msg(msg=None):
+def check_commit_msg(msg=None, max_msg_length=None):
     __validate_input(msg)
-    __check_msg_convention(msg)
+    __check_msg_parts(msg, max_msg_length)
     print(f"{GREEN}- commit message matches the chaos-hub commit rules!\
             {DEFAULT}")
     sys.exit(0)
@@ -44,6 +44,15 @@ def show_example():
  -{GREEN} Remove {BLUE}... 3\n{DEFAULT}")
 
 
+def __extract_args():
+    commit_msg_path = sys.argv[1]
+    if len(sys.argv) > 2:
+        commit_msg_path = sys.argv[2]
+        max_msg_length = int(sys.argv[1].split(sep="=")[1])
+
+    return commit_msg_path, max_msg_length
+
+
 def __validate_input(input_arg):
     if input_arg is None or not input_arg:
         print(
@@ -55,19 +64,19 @@ def __validate_input(input_arg):
         sys.exit(1)
 
 
-def __check_msg_convention(msg):
-    __check_lenth(msg, MSG_MAX_LENGTH)
+def __check_msg_parts(msg, max_msg_length):
+    __check_lenth(msg, max_msg_length)
     msg_rows = msg.splitlines()
     __check_subject_line(msg_rows[0])
     if len(msg_rows) > 1:
         __check_body(msg_rows[1:])
 
 
-def __check_lenth(msg, delimiter=""):
+def __check_lenth(msg, msg_limit):
     msg_length = len(msg)
-    if msg_length > delimiter:
+    if msg_length > msg_limit:
         print(f"{RED}- commit message is too long:\
-                {msg_length} > {delimiter}{DEFAULT}")
+                {msg_length} > {msg_limit}{DEFAULT}")
         sys.exit(1)
 
 
@@ -130,7 +139,7 @@ def __check_body(body):
     segment = "message body lines"
     for row in body[1:]:
         row = row.strip()
-        row = row[1:].lstrip() if row[0] == "-" else rowS
+        row = row[1:].lstrip() if row[0] == "-" else row
         __check_content(row, segment)
         __check_prefix(row, segment)
         __check_ending(row, segment)
