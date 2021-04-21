@@ -41,9 +41,6 @@ def check_commit_msg(msg=None):
     sys.exit(0)
 
 
-ß
-
-
 def show_example():
     print(f"{GREENFONE}EXAMPLE:\n{GREEN}Refactor{BLUE}\
  Z function {GREEN}in{BLUE}\
