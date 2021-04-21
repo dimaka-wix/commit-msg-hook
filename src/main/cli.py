@@ -1,6 +1,6 @@
 import sys
 
-MSG_MAX_LENGTH = 500
+MSG_MAX_LENGTH = 72
 RESET = "\033[0;0m"
 VIOLET = RESET+'\033[35m'
 BLUE = RESET+'\033[34m'
@@ -61,7 +61,7 @@ def __check_msg_convention(msg):
         __check_body(msg_rows[1:])
 
 
-def __check_lenth(msg, delimiter=):
+def __check_lenth(msg, delimiter=""):
     msg_length = len(msg)
     if msg_length > delimiter:
         print(f"{RED}- commit message is too long:\
@@ -72,7 +72,8 @@ def __check_lenth(msg, delimiter=):
 def __check_subject_line(subj):
     segment = "subject line"
     __check_prefix(subj, segment)
-    __check_in_from_format(subj, segment)
+    if "Release" not in subj and "Merge" not in subj and "Rename" not in subj:
+        __check_in_from_format(subj, segment)
     __check_ending(subj, segment)
 
 
@@ -125,4 +126,4 @@ def __check_body(body):
 
 
 if __name__ == "__main__":
-    main()
+    main("Add ")
