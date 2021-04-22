@@ -11,7 +11,7 @@ See [pre-commit](https://pre-commit.com/) for instructions
 
 Add this to your ```.pre-commit-config.yaml```
 ```
--   repo: https://github.com/DimaKarpukhin/commit-msg-hook.git
+-   repo: hhttps://github.com/dimaka-wix/commit-msg-hook.git
     rev: v0.2.0
     hooks:
     -   id: commit-msg-hook
@@ -21,7 +21,7 @@ Add this to your ```.pre-commit-config.yaml```
  ```   
  Update to the latest release (optional)
   ```
-  pre-commit autoupdate --repo https://github.com/DimaKarpukhin/commit-msg-hook.git
+  pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git
   ```
  ### Commit Rules
 
@@ -55,11 +55,9 @@ Refactor Z function in X file from Y component
 - Add ...
 - Update ...
  ```
- ### Bypass the hook
+ ### Bypass the hook in one of the following ways
 ```
+SKIP=commit-msg-hook git commit -m "Your message"
 git commit -m "Your message" --no-verify
-``` 
-or
-```
-git commit -m "Your message" -n
+git commit -m "Your message" -n (not recommended)
 ```
