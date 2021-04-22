@@ -12,7 +12,7 @@ See [pre-commit](https://pre-commit.com/) for instructions
 Add this to your ```.pre-commit-config.yaml```
 ```
 -   repo: https://github.com/DimaKarpukhin/commit-msg-hook.git
-    rev: v0.1.7
+    rev: v0.1.8
     hooks:
     -   id: commit-msg-hook
         stages: [commit-msg]
@@ -40,6 +40,7 @@ Add this to your ```.pre-commit-config.yaml```
   - _**Tslint** ..._
   - _**Rename** ..._
   - _**Merge** ..._
+  - _**Change** ..._
 * _Use the description to explain what and why vs how_
 * _Press **Shift+Enter** to create a new line and to write more characters then vscode lets you_
 * _**Separate subject from body with a blank line!**_

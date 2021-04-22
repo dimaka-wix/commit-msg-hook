@@ -111,9 +111,9 @@ def __check_prefix(msg, segment=""):
     is_valid_prefix = msg.lstrip().startswith(("Fix ", "Add ", "Refactor ",
                                                "Update ", "Remove ",
                                               "Release ", "Move ", "Tslint ",
-                                               "Rename ", "Merge "))
+                                               "Rename ", "Merge ", "Change "))
     prefixes = ["Fix", "Add", "Refactor", "Update", "Remove",
-                "Release", "Move", "Tslint", "Rename", "Merge"]
+                "Release", "Move", "Tslint", "Rename", "Merge", "Change"]
     if msg[0].islower():
         print(f"{RED}- capitalise the {segment}!{DEFAULT}")
         show_msg_template()
