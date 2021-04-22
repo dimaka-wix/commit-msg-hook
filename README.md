@@ -12,7 +12,7 @@ See [pre-commit](https://pre-commit.com/) for instructions
 Add this to your ```.pre-commit-config.yaml```
 ```
 -   repo: https://github.com/DimaKarpukhin/commit-msg-hook.git
-    rev: v0.1.9
+    rev: v0.2.0
     hooks:
     -   id: commit-msg-hook
         stages: [commit-msg]
