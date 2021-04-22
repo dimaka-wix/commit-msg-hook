@@ -19,10 +19,16 @@ BLUEFONE = FILLER+'\033[34m'
 
 
 def main(argv=None):
+    max_msg_length = MAX_MSG_LENGTH
     if argv is None:
-        commit_msg_path, max_msg_length = __extract_args()
-        with open(commit_msg_path, "r", encoding="utf-8") as commit_msg:
-            argv = commit_msg.read()
+        msg_path, max_msg_length = __extract_args()
+        try:
+            with open(msg_path, "r", encoding="utf-8") as commit_msg:
+                argv = commit_msg.read()
+        except FileNotFoundError:
+            print(f"{RED}ERROR: file '{msg_path}' not found\n{YELLOW}\
+HINT:  the commit message is usually saved in .git/COMMIT_EDITMSG{DEFAULT}")
+            sys.exit(1)
     check_commit_msg(argv, max_msg_length)
 
 
@@ -34,7 +40,7 @@ def check_commit_msg(msg=None, max_msg_length=None):
     sys.exit(0)
 
 
-def show_example():
+def show_msg_template():
     print(f"{GREENFONE}EXAMPLE:\n{GREEN}Refactor{BLUE}\
  Z function {GREEN}in{BLUE}\
  X file {GREEN}from {BLUE}Y component\n\
@@ -45,10 +51,14 @@ def show_example():
 
 
 def __extract_args():
+    if len(sys.argv) < 2:
+        print(f"{GREEN}This hook is made as custom plugins\
+ under the https://pre-commit.com hook framework\nand checks\
+ if commit message matches the chaos-hub team commit rules{DEFAULT}")
+        sys.exit(0)
+    msg_path = sys.argv[len(sys.argv) - 1]
     max_msg_length = MAX_MSG_LENGTH
-    msg_path = sys.argv[1]
     if len(sys.argv) > 2:
-        msg_path = sys.argv[2]
         max_msg_length = int(sys.argv[1].split(sep="=")[1])
     return msg_path, max_msg_length
 
@@ -100,18 +110,18 @@ def __check_content(msg, segment=""):
 def __check_prefix(msg, segment=""):
     is_valid_prefix = msg.lstrip().startswith(("Fix ", "Add ", "Refactor ",
                                                "Update ", "Remove ",
-                                               "Release ", "Move ", "Tslint ",
+                                              "Release ", "Move ", "Tslint ",
                                                "Rename ", "Merge "))
     prefixes = ["Fix", "Add", "Refactor", "Update", "Remove",
                 "Release", "Move", "Tslint", "Rename", "Merge"]
     if msg[0].islower():
         print(f"{RED}- capitalise the {segment}!{DEFAULT}")
-        show_example()
+        show_msg_template()
         sys.exit(1)
     if not is_valid_prefix:
         print(f"{RED}- replace {segment} prefix\
  with one of the following:\n  {prefixes}{DEFAULT}")
-        show_example()
+        show_msg_template()
         sys.exit(1)
 
 
@@ -119,7 +129,7 @@ def __check_in_from_format(subj, segment=""):
     if "in" not in subj or "from" not in subj:
         print(f"{RED}- use {GREEN}in/from {RED}format in {segment}\
  to add the place where the change was made (file/component)!{DEFAULT}")
-        show_example()
+        show_msg_template()
         sys.exit(1)
 
 
@@ -134,7 +144,7 @@ def __check_body(body):
     if body[0].strip() != "":
         print(f"{RED} - separate subject from body with a blank line!\
                 {DEFAULT}")
-        show_example()
+        show_msg_template()
         sys.exit(1)
     segment = "message body lines"
     for row in body[1:]:
@@ -146,4 +156,4 @@ def __check_body(body):
 
 
 if __name__ == "__main__":
-    main("Rename ")
+    main()
