@@ -46,12 +46,11 @@ def show_example():
 
 def __extract_args():
     max_msg_length = MAX_MSG_LENGTH
-    commit_msg_path = sys.argv[1]
+    msg_path = sys.argv[1]
     if len(sys.argv) > 2:
-        commit_msg_path = sys.argv[2]
+        msg_path = sys.argv[2]
         max_msg_length = int(sys.argv[1].split(sep="=")[1])
-
-    return commit_msg_path, max_msg_length
+    return msg_path, max_msg_length
 
 
 def __validate_input(input_arg):
