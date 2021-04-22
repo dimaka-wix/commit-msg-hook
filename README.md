@@ -19,9 +19,9 @@ Add this to your ```.pre-commit-config.yaml```
         # args is optional, the default length limit is 72
         args: [--max-msg-length=<number>]
  ```   
- Update the latest release if you are not sure
+ Update to the latest release (optional)
   ```
-  pre-commit autoupdate
+  pre-commit autoupdate --repo https://github.com/DimaKarpukhin/commit-msg-hook.git
   ```
  ### Commit Rules
 
