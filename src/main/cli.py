@@ -45,7 +45,7 @@ def main(argv=None):
     if argv is None:
         print(f">>>>> sys.argv: {sys.argv}")
         argv = __extract_msg()
-        __extract_args()
+        MAX_MSG_LENGTH = __extract_args()
     run(argv)
 
 
@@ -88,7 +88,7 @@ def __extract_args():
                     PREFIXES.append(arg)
             else:
                 MAX_MSG_LENGTH = int(decimals[0])
-    return MAX_MSG_LENGTH, PREFIXES
+    return MAX_MSG_LENGTH
 
 
 def __validate(input):
