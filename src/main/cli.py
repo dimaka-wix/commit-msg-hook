@@ -43,7 +43,7 @@ def main(argv=None):
     that was passed
     """
     if argv is None:
-        print(f">>>>> sys.argv: {sys.argv}")
+        print(f">>>>> sys.argv : {sys.argv}")
         argv = __extract_msg()
         __extract_args()
     run(argv)
