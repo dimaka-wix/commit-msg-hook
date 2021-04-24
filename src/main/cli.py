@@ -23,11 +23,11 @@ BLUEFONE = FILLER+'\033[34m'
 
 
 def show_template():
-    print(f"  {GREEN}EXAMPLE: Refactor Z function in X file from Y component\n\
-           {BLUE}<optional part, adding it leave an empty line here>\n{GREEN}\
-           - Fix ...\n\
-           - Add ...\n\
-           - Remove ... \n{YELLOW}\n\
+    print(f"{GREEN}EXAMPLE: Refactor Z function in X file from Y component\n\
+    {BLUE}<optional part, adding it leave an empty line here>\n{GREEN}\
+    - Fix ...\n\
+    - Add ...\n\
+    - Remove ... \n{YELLOW}\n\
 HINT: to read chaos-hum team rules visit: {BLUE}\
 https://github.com/dimaka-wix/commit-msg-hook.git \n{DEFAULT}")
 
@@ -43,7 +43,7 @@ def main(argv=None):
     that was passed
     """
     if argv is None:
-        print(f">>>>> sys.argv: {sys.argv}")
+        print(f">>>>> sys.argv : {sys.argv}")
         argv = __extract_msg()
         __extract_args()
     run(argv)
@@ -140,7 +140,7 @@ def __check_body(msg):
 def __check_content(msg, segment=""):
     words = msg.strip().split()
     if len(words) < 2:
-        print(f"\n{RED}ERROR: the {BLUE}`{input}` {RED}message is invalid!\n- a\
+        print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n- a \
 one-word message is not informative add more details in {segment}!\n{DEFAULT}")
         show_template()
         sys.exit(1)
