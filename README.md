@@ -40,7 +40,7 @@ Add this to your ```.pre-commit-config.yaml```
   - _**Tslint** ..._
   - _**Rename** ..._
   - _**Merge** ..._
-  - _**Change** ..._
+  - _**Disable** ..._
 * _Use the description to explain what and why vs how_
 * _Press **Shift+Enter** to create a new line and to write more characters then vscode lets you_
 * _**Separate subject from body with a blank line!**_
@@ -50,7 +50,7 @@ Add this to your ```.pre-commit-config.yaml```
 #### Example
 ```
 Refactor Z function in X file from Y component
-
+<body is optional, but if you add it, leave an empty line here>
 - Fix ...
 - Add ...
 - Update ...

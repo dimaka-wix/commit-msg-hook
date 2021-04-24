@@ -1,4 +1,5 @@
 import sys
+import re
 
 MAX_MSG_LENGTH = 72
 
@@ -19,32 +20,52 @@ BLUEFONE = FILLER+'\033[34m'
 
 
 def main(argv=None):
+    """
+    Entery point of the hook
+    Start the main logic of the entire commit-msg hook
+    Args:
+        argv: the commit message to check
+        sys.argv:
+    If argv is None extract commit message from the file
+    that was passed
+    """
     max_msg_length = MAX_MSG_LENGTH
     if argv is None:
+        print(f">>>>> sys.argv: {sys.argv}")
         msg_path, max_msg_length = __extract_args()
         try:
             with open(msg_path, "r", encoding="utf-8") as commit_msg:
                 argv = commit_msg.read()
         except FileNotFoundError:
-            print(f"{RED}ERROR: file '{msg_path}' not found\n{YELLOW}\
+            print(f"{RED}ERROR: file '{msg_path}' not found!\n{YELLOW}\
 HINT:  the commit message is usually saved in .git/COMMIT_EDITMSG{DEFAULT}")
             sys.exit(1)
     check_commit_msg(argv, max_msg_length)
 
 
 def check_commit_msg(msg=None, max_msg_length=None):
+    """
+    Create slack instance.
+    Args:
+        slack_client: Slack - The initialize slack instance.
+    Returns:
+        slack: slack instance.
+    """
     __validate_input(msg)
-    __check_msg_parts(msg, max_msg_length)
+    __check_lenth(msg, max_msg_length)
+    msg_rows = msg.splitlines()
+    __check_subject_line(msg_rows[0])
+    if len(msg_rows) > 1:
+        __check_body(msg_rows[1:])
     print(f"{GREEN}- commit message matches the chaos-hub commit rules!\
             {DEFAULT}")
-    sys.exit(0)
 
 
 def show_msg_template():
     print(f"{GREENFONE}EXAMPLE:\n{GREEN}Refactor{BLUE}\
  Z function {GREEN}in{BLUE}\
  X file {GREEN}from {BLUE}Y component\n\
- < empty line >\n\
+ < <body is optional, but if you add it, leave an empty line here> >\n\
  -{GREEN} Fix {BLUE}... 1\n\
  -{GREEN} Add {BLUE}... 2\n\
  -{GREEN} Remove {BLUE}... 3\n{DEFAULT}")
@@ -56,11 +77,17 @@ def __extract_args():
  under the https://pre-commit.com hook framework\nand checks\
  if commit message matches the chaos-hub team commit rules{DEFAULT}")
         sys.exit(0)
-    msg_path = sys.argv[len(sys.argv) - 1]
-    max_msg_length = MAX_MSG_LENGTH
+    path = sys.argv[len(sys.argv) - 1]
+    argv1 = MAX_MSG_LENGTH
     if len(sys.argv) > 2:
-        max_msg_length = int(sys.argv[1].split(sep="=")[1])
-    return msg_path, max_msg_length
+        argv1 = re.findall(r'\d+', sys.argv[1])
+        if len(argv1) > 0:
+            argv1 = int(argv1[0])
+        else:
+            print(f"{RED}ERROR: '{argv1}' is a wrong argument!\n{YELLOW}\
+HINT:  this argument must contain a number{DEFAULT}")
+            sys.exit(1)
+    return path, argv1
 
 
 def __validate_input(input_arg):
@@ -111,9 +138,9 @@ def __check_prefix(msg, segment=""):
     is_valid_prefix = msg.lstrip().startswith(("Fix ", "Add ", "Refactor ",
                                                "Update ", "Remove ",
                                               "Release ", "Move ", "Tslint ",
-                                               "Rename ", "Merge ", "Change "))
+                                               "Rename ", "Merge ", "Disable "))
     prefixes = ["Fix", "Add", "Refactor", "Update", "Remove",
-                "Release", "Move", "Tslint", "Rename", "Merge", "Change"]
+                "Release", "Move", "Tslint", "Rename", "Merge", "Disable"]
     if msg[0].islower():
         print(f"{RED}- capitalise the {segment}!{DEFAULT}")
         show_msg_template()
@@ -156,4 +183,4 @@ def __check_body(body):
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())
