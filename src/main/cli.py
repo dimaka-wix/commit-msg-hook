@@ -43,9 +43,9 @@ def main(argv=None):
     that was passed
     """
     if argv is None:
-        print(f">>>>> sys.argv: {sys.argv}")
+        print(f">>>>> sys.argv : {sys.argv}")
         argv = __extract_msg()
-        MAX_MSG_LENGTH = __extract_args()
+        __extract_args()
     run(argv)
 
 
@@ -78,6 +78,8 @@ HINT:  the commit message is usually saved in {COMMIT_EDITMSG}\n{DEFAULT}")
 
 
 def __extract_args():
+    global PREFIXES
+    global MAX_MSG_LENGTH
     args = sys.argv
     if len(args) > 2:
         for arg in args[1:len(args)-1]:
@@ -88,7 +90,7 @@ def __extract_args():
                     PREFIXES.append(arg)
             else:
                 MAX_MSG_LENGTH = int(decimals[0])
-    return MAX_MSG_LENGTH
+    return MAX_MSG_LENGTH, PREFIXES
 
 
 def __validate(input):
