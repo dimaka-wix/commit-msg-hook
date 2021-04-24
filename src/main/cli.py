@@ -3,8 +3,8 @@ import re
 
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
 MAX_MSG_LENGTH = 72
-PREFIXES = ("Add ", "Refactor ", "Update ", "Remove ", "Disable ",
-            "Release ", "Move ", "Tslint ", "Rename ", "Merge ", "Fix ")
+PREFIXES = ["Add ", "Refactor ", "Update ", "Remove ", "Disable ",
+            "Release ", "Move ", "Tslint ", "Rename ", "Merge ", "Fix "]
 
 DEFAULT = "\033[0;0m"
 VIOLET = DEFAULT+'\033[35m'
@@ -54,7 +54,7 @@ def run(msg):
     __check_length(msg)
     __check_subject_line(msg)
     __check_body(msg)
-    print(f"\n{GREEN}- commit message matches the chaos-hub commit rules!\
+    print(f"\n{GREEN}CONGRATS! Commit message matches the chaos-hub commit rules!\
             \n{DEFAULT}")
 
 
@@ -121,7 +121,7 @@ def __check_subject_line(msg):
 
 
 def __check_body(msg):
-    if len(msg) > 1:
+    if len(msg.splitlines()) > 1:
         body = msg.splitlines()[1:]
         if body[0].strip() != "":
             print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n\
@@ -147,7 +147,7 @@ one-word message is not informative add more details in {segment}!\n{DEFAULT}")
 
 
 def __check_prefix(msg, segment=""):
-    is_valid_prefix = msg.lstrip().startswith(PREFIXES)
+    is_valid_prefix = msg.lstrip().startswith(tuple(PREFIXES))
     if msg[0].islower():
         print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n\
 - capitalise the {segment}!\n{DEFAULT}")
