@@ -1,7 +1,10 @@
 import sys
 import re
 
+COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
 MAX_MSG_LENGTH = 72
+PREFIXES = ("Add ", "Refactor ", "Update ", "Remove ", "Disable ",
+            "Release ", "Move ", "Tslint ", "Rename ", "Merge ", "Fix ")
 
 DEFAULT = "\033[0;0m"
 VIOLET = DEFAULT+'\033[35m'
@@ -19,6 +22,16 @@ GREENFONE = FILLER+'\033[32m'
 BLUEFONE = FILLER+'\033[34m'
 
 
+def show_template():
+    print(f"  {GREEN}EXAMPLE: Refactor Z function in X file from Y component\n\
+           {BLUE}<optional part, adding it leave an empty line here>\n{GREEN}\
+           - Fix ...\n\
+           - Add ...\n\
+           - Remove ... \n{YELLOW}\n\
+HINT: to read chaos-hum team rules visit: {BLUE}\
+https://github.com/dimaka-wix/commit-msg-hook.git \n{DEFAULT}")
+
+
 def main(argv=None):
     """
     Entery point of the hook
@@ -29,95 +42,76 @@ def main(argv=None):
     If argv is None extract commit message from the file
     that was passed
     """
-    max_msg_length = MAX_MSG_LENGTH
     if argv is None:
         print(f">>>>> sys.argv: {sys.argv}")
-        msg_path, max_msg_length = __extract_args()
-        try:
-            with open(msg_path, "r", encoding="utf-8") as commit_msg:
-                argv = commit_msg.read()
-        except FileNotFoundError:
-            print(f"{RED}ERROR: file '{msg_path}' not found!\n{YELLOW}\
-HINT:  the commit message is usually saved in .git/COMMIT_EDITMSG{DEFAULT}")
-            sys.exit(1)
-    check_commit_msg(argv, max_msg_length)
+        argv = __extract_msg()
+        __extract_args()
+    run(argv)
 
 
-def check_commit_msg(msg=None, max_msg_length=None):
-    """
-    Create slack instance.
-    Args:
-        slack_client: Slack - The initialize slack instance.
-    Returns:
-        slack: slack instance.
-    """
-    __validate_input(msg)
-    __check_lenth(msg, max_msg_length)
-    msg_rows = msg.splitlines()
-    __check_subject_line(msg_rows[0])
-    if len(msg_rows) > 1:
-        __check_body(msg_rows[1:])
-    print(f"{GREEN}- commit message matches the chaos-hub commit rules!\
-            {DEFAULT}")
+def run(msg):
+    __validate(msg)
+    __check_length(msg)
+    __check_subject_line(msg)
+    __check_body(msg)
+    print(f"\n{GREEN}- commit message matches the chaos-hub commit rules!\
+            \n{DEFAULT}")
 
 
-def show_msg_template():
-    print(f"{GREENFONE}EXAMPLE:\n{GREEN}Refactor{BLUE}\
- Z function {GREEN}in{BLUE}\
- X file {GREEN}from {BLUE}Y component\n\
- < <body is optional, but if you add it, leave an empty line here> >\n\
- -{GREEN} Fix {BLUE}... 1\n\
- -{GREEN} Add {BLUE}... 2\n\
- -{GREEN} Remove {BLUE}... 3\n{DEFAULT}")
+def __extract_msg():
+    args = sys.argv
+    if len(args) < 2:
+        print(f"\n{GREEN}This hook is made as custom plugins\
+ under the https://pre-commit.com hook framework\nand checks\
+ if commit message matches the chaos-hub team commit rules\n{DEFAULT}")
+        sys.exit(0)
+    path = args[len(args) - 1]
+    path = COMMIT_EDITMSG if path.upper() in COMMIT_EDITMSG else path
+    try:
+        with open(path, "r", encoding="utf-8") as msg:
+            commit_msg = msg.read()
+    except FileNotFoundError:
+        print(f"\n{RED}ERROR: file '{path}' not found!\n{YELLOW}\
+HINT:  the commit message is usually saved in {COMMIT_EDITMSG}\n{DEFAULT}")
+        sys.exit(1)
+    return commit_msg
 
 
 def __extract_args():
-    if len(sys.argv) < 2:
-        print(f"{GREEN}This hook is made as custom plugins\
- under the https://pre-commit.com hook framework\nand checks\
- if commit message matches the chaos-hub team commit rules{DEFAULT}")
-        sys.exit(0)
-    path = sys.argv[len(sys.argv) - 1]
-    argv1 = MAX_MSG_LENGTH
-    if len(sys.argv) > 2:
-        argv1 = re.findall(r'\d+', sys.argv[1])
-        if len(argv1) > 0:
-            argv1 = int(argv1[0])
-        else:
-            print(f"{RED}ERROR: '{argv1}' is a wrong argument!\n{YELLOW}\
-HINT:  this argument must contain a number{DEFAULT}")
-            sys.exit(1)
-    return path, argv1
+    args = sys.argv
+    if len(args) > 2:
+        for arg in args[1:len(args)-1]:
+            decimals = re.findall(r'\d+', arg)
+            if len(decimals) == 0:
+                arg = (arg.strip() + " ").lstrip()
+                if len(arg) > 3:
+                    PREFIXES.append(arg)
+            else:
+                MAX_MSG_LENGTH = int(decimals[0])
+    return MAX_MSG_LENGTH, PREFIXES
 
 
-def __validate_input(input_arg):
-    if input_arg is None or not input_arg:
-        print(
-            f"{RED}- commit message can't be empty!{DEFAULT}")
+def __validate(input):
+    if input is None or not input:
+        print(f"\n{RED}ERROR: the {BLUE}`{input}` {RED}message is invalid!\n\
+- commit message can't be empty!\n{DEFAULT}")
         sys.exit(1)
-    if not isinstance(input_arg, str):
-        print(
-            f"{RED}- commit message must be a string!{DEFAULT}")
+    if not isinstance(input, str):
+        print(f"\n{RED}ERROR: the {BLUE}`{input}` {RED}message is invalid!\n\
+- commit message must be a string!\n{DEFAULT}")
         sys.exit(1)
 
 
-def __check_msg_parts(msg, max_msg_length):
-    __check_lenth(msg, max_msg_length)
-    msg_rows = msg.splitlines()
-    __check_subject_line(msg_rows[0])
-    if len(msg_rows) > 1:
-        __check_body(msg_rows[1:])
-
-
-def __check_lenth(msg, msg_limit):
+def __check_length(msg):
     msg_length = len(msg)
-    if msg_length > msg_limit:
-        print(f"{RED}- commit message is too long: {msg_length} > {msg_limit}\
-                {DEFAULT}")
+    if msg_length > MAX_MSG_LENGTH:
+        print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n\
+- commit message is too long: {msg_length} > {MAX_MSG_LENGTH}\n{DEFAULT}")
         sys.exit(1)
 
 
-def __check_subject_line(subj):
+def __check_subject_line(msg):
+    subj = msg.splitlines()[0]
     segment = "subject line"
     __check_content(subj, segment)
     __check_prefix(subj, segment)
@@ -126,60 +120,60 @@ def __check_subject_line(subj):
     __check_ending(subj, segment)
 
 
+def __check_body(msg):
+    if len(msg) > 1:
+        body = msg.splitlines()[1:]
+        if body[0].strip() != "":
+            print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n\
+- separate subject from body with a blank line!\n{DEFAULT}")
+            show_template()
+            sys.exit(1)
+        segment = "message body lines"
+        for row in body[1:]:
+            row = row.strip()
+            row = row[1:].lstrip() if row[0] == "-" else row
+            __check_content(row, segment)
+            __check_prefix(row, segment)
+            __check_ending(row, segment)
+
+
 def __check_content(msg, segment=""):
     words = msg.strip().split()
     if len(words) < 2:
-        print(f"{RED} - a one-word message is not informative\
- add more details in {segment}!{DEFAULT}")
+        print(f"\n{RED}ERROR: the {BLUE}`{input}` {RED}message is invalid!\n- a\
+one-word message is not informative add more details in {segment}!\n{DEFAULT}")
+        show_template()
         sys.exit(1)
 
 
 def __check_prefix(msg, segment=""):
-    is_valid_prefix = msg.lstrip().startswith(("Fix ", "Add ", "Refactor ",
-                                               "Update ", "Remove ",
-                                              "Release ", "Move ", "Tslint ",
-                                               "Rename ", "Merge ", "Disable "))
-    prefixes = ["Fix", "Add", "Refactor", "Update", "Remove",
-                "Release", "Move", "Tslint", "Rename", "Merge", "Disable"]
+    is_valid_prefix = msg.lstrip().startswith(PREFIXES)
     if msg[0].islower():
-        print(f"{RED}- capitalise the {segment}!{DEFAULT}")
-        show_msg_template()
+        print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n\
+- capitalise the {segment}!\n{DEFAULT}")
+        show_template()
         sys.exit(1)
     if not is_valid_prefix:
-        print(f"{RED}- replace {segment} prefix\
- with one of the following:\n  {prefixes}{DEFAULT}")
-        show_msg_template()
+        print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n- replace \
+{segment} prefix with one of the following:\n  {''.join(PREFIXES)}\n{DEFAULT}")
+        show_template()
         sys.exit(1)
 
 
 def __check_in_from_format(subj, segment=""):
     if "in" not in subj or "from" not in subj:
-        print(f"{RED}- use {GREEN}in/from {RED}format in {segment}\
- to add the place where the change was made (file/component)!{DEFAULT}")
-        show_msg_template()
+        print(f"\n{RED}ERROR: the {BLUE}`{input}` {RED}message is invalid!\n\
+- use {GREEN}in/from {RED}format in {segment} to add the place \
+where the change was made (file/component)!\n{DEFAULT}")
+        show_template()
         sys.exit(1)
 
 
 def __check_ending(msg, segment=""):
     if msg.rstrip().endswith("."):
-        print(f"{RED}- do not end the {segment} with a period!\
-                {DEFAULT}")
+        print(f"\n{RED}ERROR: the {BLUE}`{input}` {RED}message is invalid!\n\
+do not end the {segment} with a period!\n{DEFAULT}")
         sys.exit(1)
-
-
-def __check_body(body):
-    if body[0].strip() != "":
-        print(f"{RED} - separate subject from body with a blank line!\
-                {DEFAULT}")
-        show_msg_template()
-        sys.exit(1)
-    segment = "message body lines"
-    for row in body[1:]:
-        row = row.strip()
-        row = row[1:].lstrip() if row[0] == "-" else row
-        __check_content(row, segment)
-        __check_prefix(row, segment)
-        __check_ending(row, segment)
 
 
 if __name__ == "__main__":
