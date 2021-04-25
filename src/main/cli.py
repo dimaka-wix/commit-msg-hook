@@ -33,23 +33,14 @@ https://github.com/dimaka-wix/commit-msg-hook.git \n{DEFAULT}")
 
 
 def main(argv=None):
-    """
-    Entery point of the hook
-    Start the main logic of the entire commit-msg hook
-    Args:
-        argv: the commit message to check
-        sys.argv:
-    If argv is None extract commit message from the file
-    that was passed
-    """
     if argv is None:
         print(f">>>>> sys.argv: {sys.argv}")
-        argv = __extract_msg()
+        msg = __extract_msg()
         __extract_args()
-    run(argv)
+    run_hook(msg)
 
 
-def run(msg):
+def run_hook(msg):
     __validate(msg)
     __check_length(msg)
     __check_subject_line(msg)

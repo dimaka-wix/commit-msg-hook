@@ -14,10 +14,10 @@ Add this to your ```.pre-commit-config.yaml```
 -   repo: hhttps://github.com/dimaka-wix/commit-msg-hook.git
     rev: v0.2.0
     hooks:
-    -   id: commit-msg-hook
+    -   id: commit-msg-hookcs
         stages: [commit-msg]
         # args is optional, the default length limit is 72
-        args: [--max-msg-length=<number>]
+        args: [--max-msg-length=<number>, new_prefix1, new_prefix2, ...]
  ```   
  Update to the latest release (optional)
   ```
@@ -56,8 +56,8 @@ Refactor Z function in X file from Y component
 - Update ...
  ```
  ### Bypass the hook in one of the following ways
-```
-SKIP=commit-msg-hook git commit -m "Your message"
-git commit -m "Your message" --no-verify
-git commit -m "Your message" -n (not recommended)
-```
+```SKIP=commit-msg-hook git commit -m "Your message"```
+
+```git commit -m "Your message" --no-verify```
+
+```git commit -m "Your message" -n (not recommended)```
