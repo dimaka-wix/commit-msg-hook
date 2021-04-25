@@ -110,7 +110,7 @@ def __check_subject_line(msg):
     __check_content(subj, segment)
     __check_prefix(subj, segment)
     if "Release" not in subj and "Merge" not in subj and "Rename" not in subj:
-        __check_in_from_format(subj, segment)
+        # __check_in_from_format(subj, segment)
     __check_ending(subj, segment)
 
 
