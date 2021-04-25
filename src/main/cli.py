@@ -147,7 +147,7 @@ def __check_prefix(msg, segment=""):
         sys.exit(1)
     if not is_valid_prefix:
         print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n- replace \
-{segment} prefix with one of the following:\n {' '.join(PREFIXES)}\n{DEFAULT}")
+{segment} prefix with one of the options:\n {' '.join(PREFIXES)}\n{DEFAULT}")
         show_template()
         sys.exit(1)
 
