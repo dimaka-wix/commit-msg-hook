@@ -34,7 +34,6 @@ https://github.com/dimaka-wix/commit-msg-hook.git \n{DEFAULT}")
 
 def main(argv=None):
     if argv is None:
-        print(f">>>>> sys.argv: {sys.argv}")
         msg = __extract_msg()
         __extract_args()
     run_hook(msg)
