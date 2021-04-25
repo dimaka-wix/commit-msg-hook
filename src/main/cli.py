@@ -51,9 +51,9 @@ def run_hook(msg):
 def __extract_msg():
     args = sys.argv
     if len(args) < 2:
-        print(f"\n{GREEN}This hook is made as custom plugins\
+        print(f"\n\n{GREEN}This hook is made as custom plugins\
  under the https://pre-commit.com hook framework\nand checks\
- if commit message matches the chaos-hub team commit rules\n{DEFAULT}")
+ if commit message matches the chaos-hub team commit rules\n\n{DEFAULT}")
         sys.exit(0)
     path = args[len(args) - 1]
     path = COMMIT_EDITMSG if path.upper() in COMMIT_EDITMSG else path
@@ -97,7 +97,7 @@ def __validate(input):
 def __check_length(msg):
     msg_length = len(msg)
     if msg_length > MAX_MSG_LENGTH:
-        print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n\
+        print(f"\n{RED}ERROR: the {BLUE}`{msg.strip()}` {RED}message is invalid!\n\
 - commit message is too long: {msg_length} > {MAX_MSG_LENGTH}\n{DEFAULT}")
         sys.exit(1)
 
@@ -116,7 +116,7 @@ def __check_body(msg):
     if len(msg.splitlines()) > 1:
         body = msg.splitlines()[1:]
         if body[0].strip() != "":
-            print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n\
+            print(f"\n{RED}ERROR: the {BLUE}\n`{body}` {RED} message is invalid!\n\
 - separate subject from body with a blank line!\n{DEFAULT}")
             show_template()
             sys.exit(1)
@@ -154,7 +154,7 @@ def __check_prefix(msg, segment=""):
 
 def __check_in_from_format(subj, segment=""):
     if "in" not in subj or "from" not in subj:
-        print(f"\n{RED}ERROR: the {BLUE}`{input}` {RED}message is invalid!\n\
+        print(f"\n{RED}ERROR: the {BLUE}`{subj}` {RED}message is invalid!\n\
 - use {GREEN}in/from {RED}format in {segment} to add the place \
 where the change was made (file/component)!\n{DEFAULT}")
         show_template()
@@ -163,7 +163,7 @@ where the change was made (file/component)!\n{DEFAULT}")
 
 def __check_ending(msg, segment=""):
     if msg.rstrip().endswith("."):
-        print(f"\n{RED}ERROR: the {BLUE}`{input}` {RED}message is invalid!\n\
+        print(f"\n{RED}ERROR: the {BLUE}`{msg}` {RED}message is invalid!\n\
 do not end the {segment} with a period!\n{DEFAULT}")
         sys.exit(1)
 
