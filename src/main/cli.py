@@ -53,7 +53,9 @@ def __extract_msg():
     if len(args) < 2:
         print(f"\n\n{GREEN}This hook is made as custom plugins\
  under the https://pre-commit.com hook framework\nand checks\
- if commit message matches the chaos-hub team commit rules\n\n{DEFAULT}")
+ if commit message matches the chaos-hub team commit rules\n\
+ to read chaos-hum team rules visit: {BLUE}\
+ https://github.com/dimaka-wix/commit-msg-hook.git \n\n{DEFAULT}")
         sys.exit(0)
     path = args[len(args) - 1]
     path = COMMIT_EDITMSG if path.upper() in COMMIT_EDITMSG else path
