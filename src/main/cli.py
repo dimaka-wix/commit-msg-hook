@@ -51,11 +51,11 @@ def run_hook(msg):
 def __extract_msg():
     args = sys.argv
     if len(args) < 2:
-        print(f"\n\n{GREEN}This hook is made as custom plugins\
- under the https://pre-commit.com hook framework\nand checks\
- if commit message matches the chaos-hub team commit rules\n\
- to read chaos-hum team rules visit: {BLUE}\
- https://github.com/dimaka-wix/commit-msg-hook.git \n\n{DEFAULT}")
+        print(f"\n{GREEN}This hook is made as custom plugins \
+under the {BLUE}https://pre-commit.com {GREEN}hook framework\n\
+and checks if commit message matches the chaos-hub team commit rules\n{YELLOW}\
+HINT: to read chaos-hum team rules visit {BLUE}\
+https://github.com/dimaka-wix/commit-msg-hook.git \n{DEFAULT}")
         sys.exit(0)
     path = args[len(args) - 1]
     path = COMMIT_EDITMSG if path.upper() in COMMIT_EDITMSG else path
@@ -171,4 +171,4 @@ do not end the {segment} with a period!\n{DEFAULT}")
 
 
 if __name__ == "__main__":
-    exit(main("kjhkj"))
+    exit(main())
