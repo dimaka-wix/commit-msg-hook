@@ -24,19 +24,19 @@ BLUEFONE = FILLER+'\033[34m'
 
 def show_template():
     print(f"{GREEN}EXAMPLE: Refactor Z function in X file from Y component\n\
-    {BLUE}<optional part, adding it leave an empty line here>\n{GREEN}\
-    - Fix ...\n\
-    - Add ...\n\
-    - Remove ... \n{YELLOW}\n\
+         {BLUE}<optional part, adding it leave an empty line here>\n{GREEN}\
+         - Fix ...\n\
+         - Add ...\n\
+         - Remove ... \n{YELLOW}\n\
 HINT: to read chaos-hum team rules visit: {BLUE}\
 https://github.com/dimaka-wix/commit-msg-hook.git \n{DEFAULT}")
 
 
 def main(argv=None):
     if argv is None:
-        msg = __extract_msg()
+        argv = __extract_msg()
         __extract_args()
-    run_hook(msg)
+    run_hook(argv)
 
 
 def run_hook(msg):
@@ -169,4 +169,4 @@ do not end the {segment} with a period!\n{DEFAULT}")
 
 
 if __name__ == "__main__":
-    exit(main())
+    exit(main("kjhkj"))
