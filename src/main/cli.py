@@ -239,7 +239,7 @@ def check_prefix(msg: str, segment=""):
     """
     Check if a prefix of the message is valid.
 
-    If tprefix of the message is invalid
+    If the prefix of the message is invalid
     display appropriate error and hint and continue with other checks.
 
     Args:
