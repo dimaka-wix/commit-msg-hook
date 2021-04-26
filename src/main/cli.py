@@ -1,17 +1,18 @@
 """
 This is an commit-msg stage hook.
 
-It is made as custom plugins under the https://pre-commit.com
+It is made as a custom plugin under the https://pre-commit.com
 hook framework and checks if commit message matches
 the chaos-hub team commit rules.
 """
 
 import re
 import sys
+__all__ = ["main"]
 
 IS_EXIT_1 = False
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
-MAX_MSG_LENGTH = 72
+MAX_MSG_LENGTH = 3
 PREFIXES = ["Add ", "Change ", "Create ", "Disable ", "Fix ",
             "Merge ", "Move ", "Refactor ", "Release ",
             "Remove ", "Rename ", "Tslint ", "Update "]
@@ -46,8 +47,8 @@ def main(msg=None):
                                 Defaults to None.
     """
     if msg is None:
-        msg = __get_commit_msg()
-        __set_args()
+        msg = get_commit_msg()
+        set_args()
     run_hook(msg)
 
 
@@ -63,9 +64,9 @@ def run_hook(msg: str):
         msg (str): The commit message to check.
     """
     global IS_EXIT_1
-    __check_length(msg)
-    __check_subject_line(msg)
-    __check_body(msg)
+    check_length(msg)
+    check_subject_line(msg)
+    check_body(msg)
     if IS_EXIT_1:
         show_example()
         sys.exit(1)
@@ -88,15 +89,15 @@ EXAMPLE:\n\
   - Fix ...\n\
   - Add ...\n\
   - Remove ... \n{YELLOW}\
-HINT:  to read chaos-hum team rules visit: {BLUE}\
+HINT: to read chaos-hum team rules visit: {BLUE}\
 https://github.com/dimaka-wix/commit-msg-hook.git \n{DEFAULT}")
 
 
-def __get_commit_msg() -> str:
+def get_commit_msg() -> str:
     """
-    Extract commit message content.
+    Get commit message content.
 
-    Try to extract the message on the path given in a command line.
+    Try to get the message on the path given in a command line.
     If fail, abort commit(exit nonzero), display appropriate error and hint.
     If there are no arguments, show information about the hook.
 
@@ -107,9 +108,9 @@ def __get_commit_msg() -> str:
     if len(args) < 2:
         print(f"\n{GREEN}\
 This hook is made as custom plugins under the {BLUE}https://pre-commit.com \
-{GREEN}hook framework\nand checks if commit message \
+{GREEN}hook framework\nIt checks if commit message \
 matches the chaos-hub team commit rules\n{YELLOW}\
-HINT:  to read chaos-hum team rules visit {BLUE}\
+HINT: to read chaos-hum team rules visit {BLUE}\
 https://github.com/dimaka-wix/commit-msg-hook.git \n{DEFAULT}")
         sys.exit(0)
     path = args[len(args) - 1]
@@ -125,7 +126,7 @@ HINT:  the commit message is usually saved in {COMMIT_EDITMSG}\n{DEFAULT}")
     return commit_msg
 
 
-def __set_args():
+def set_args():
     """
     Set additional arguments if were passed.
 
@@ -146,7 +147,7 @@ def __set_args():
                 MAX_MSG_LENGTH = int(decimals[0])
 
 
-def __check_length(msg: str):
+def check_length(msg: str):
     """
     Check the length of a commit message.
 
@@ -169,7 +170,7 @@ ERROR: commit message is too long: {msg_length} > {MAX_MSG_LENGTH}{DEFAULT}\n")
         IS_EXIT_1 = True
 
 
-def __check_subject_line(msg: str):
+def check_subject_line(msg: str):
     """
     Check the subject line of a commit message.
 
@@ -181,12 +182,12 @@ def __check_subject_line(msg: str):
     """
     subj = msg.splitlines()[0]
     segment = "subject line"
-    __check_content(subj, segment)
-    __check_prefix(subj, segment)
-    __check_ending(subj, segment)
+    check_content(subj, segment)
+    check_prefix(subj, segment)
+    check_ending(subj, segment)
 
 
-def __check_body(msg: str):
+def check_body(msg: str):
     """
     Check the body of a commit message.
 
@@ -207,12 +208,12 @@ ERROR: separate subject from body with a blank line!\n{DEFAULT}")
         for row in body[1:]:
             row = row.strip()
             row = row[1:].lstrip() if row[0] == "-" else row
-            __check_content(row, segment)
-            __check_prefix(row, segment)
-            __check_ending(row, segment)
+            check_content(row, segment)
+            check_prefix(row, segment)
+            check_ending(row, segment)
 
 
-def __check_content(msg: str, segment=""):
+def check_content(msg: str, segment=""):
     """
     Check if a commit message contains more then 1 word.
 
@@ -234,7 +235,7 @@ ERROR: one-word message is not informative, add more details to {segment}!\n\
         IS_EXIT_1 = True
 
 
-def __check_prefix(msg: str, segment=""):
+def check_prefix(msg: str, segment=""):
     """
     Check if a prefix of the message is valid.
 
@@ -262,7 +263,7 @@ HINT:  you can add new prefixes as an {BLUE}args: {YELLOW}in {BLUE}\
         IS_EXIT_1 = True
 
 
-def __check_ending(msg: str, segment=""):
+def check_ending(msg: str, segment=""):
     """
     Check whether the message specific part ends with a dot or not.
 
@@ -282,4 +283,4 @@ ERROR: do not end {segment} with a period!{DEFAULT}")
 
 
 if __name__ == "__main__":
-    exit(main("Add a "))
+    exit(main())
