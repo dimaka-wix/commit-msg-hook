@@ -12,7 +12,7 @@ __all__ = ["main"]
 
 IS_EXIT_1 = False
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
-MAX_MSG_LENGTH = 71
+MAX_MSG_LENGTH = 72
 PREFIXES = ["Add ", "Change ", "Create ", "Disable ", "Fix ",
             "Merge ", "Move ", "Refactor ", "Release ",
             "Remove ", "Rename ", "Tslint ", "Update "]
