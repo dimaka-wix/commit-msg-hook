@@ -12,11 +12,11 @@ See [pre-commit](https://pre-commit.com/) for instructions
 Add this to your ```.pre-commit-config.yaml```
 ```
 -   repo: hhttps://github.com/dimaka-wix/commit-msg-hook.git
-    rev: v0.2.0
+    rev: v0.2.5
     hooks:
     -   id: commit-msg-hookcs
-        stages: [commit-msg]
         # args is optional, the default length limit is 72
+        stages: [commit-msg]
         args: [--max-msg-length=<number>, new_prefix1, new_prefix2, ...]
  ```   
  Update to the latest release (optional)
@@ -30,21 +30,22 @@ Add this to your ```.pre-commit-config.yaml```
 * _Do not end the subject line with a period_
 * _Use the imperative mood(e.g. **Add** instead of **Added**)_
 * _Start message with one of following prefixes_
-  - _**Fix** ..._
-  - _**Add** ..._
-  - _**Refactor** ..._
-  - _**Update** ..._
-  - _**Remove** ..._
-  - _**Release** ..._
-  - _**Move** ..._ 
-  - _**Tslint** ..._
-  - _**Rename** ..._
-  - _**Merge** ..._
-  - _**Disable** ..._
+  - _**Add ...**_
+  - _**Change ...**_
+  - _**Create ...**_
+  - _**Disable ...**_
+  - _**Fix ...**_
+  - _**Merge ...**_
+  - _**Move ...**_
+  - _**Refactor ...**_
+  - _**Release ...**_
+  - _**Remove ...**_
+  - _**Rename ...**_
+  - _**Tslint ...**_
+  - _**Update ...**_
 * _Use the description to explain what and why vs how_
 * _Press **Shift+Enter** to create a new line and to write more characters then vscode lets you_
 * _**Separate subject from body with a blank line!**_
-* _Use **in/from** format **in suject line** to add the place where the change was made (file/component)_
 
 
 #### Example
