@@ -82,7 +82,7 @@ def show_example():
 
     The example follows chaos-hub team commit rules.
     """
-    print(f"{GREEN}\
+    print(f"{GREEN}\n\
 EXAMPLE:\n\
   Refactor foo function in ...\n{BLUE}\
 <body is optional, adding it leave an empty line here>\n{GREEN}\
@@ -259,7 +259,7 @@ ERROR: wrong {segment} prefix!\n{YELLOW}\
 HINT:  you can add new prefixes as an {BLUE}args: {YELLOW}in {BLUE}\
 .pre-commit-config.yaml\n{YELLOW}\
        otherwise, replace prefix with one of the following options:\n{YELLOW}\
-       {nl.join(PREFIXES)}...{DEFAULT}\n")
+       {nl.join(PREFIXES)}...{DEFAULT}")
         IS_EXIT_1 = True
 
 
