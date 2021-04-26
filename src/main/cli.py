@@ -93,11 +93,11 @@ HINT: to read chaos-hum team rules visit: {BLUE}\
 https://github.com/dimaka-wix/commit-msg-hook.git \n{DEFAULT}")
 
 
-def get_commit_msg() -> str:
+def extract_commit_msg() -> str:
     """
-    Get commit message content.
+    Extract commit message content.
 
-    Try to get the message on the path given in a command line.
+    Try to extract the message on the path given in a command line.
     If fail, abort commit(exit nonzero), display appropriate error and hint.
     If there are no arguments, show information about the hook.
 
