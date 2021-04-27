@@ -40,11 +40,10 @@ def main():
     """
     Perform validations of the commit message.
 
-    If `msg` argument is None,
-    extract arguments from command line and run the hook logic
+    Extract arguments from command line and run the hook logic
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--prefix", nargs="+", type=str,
+    parser.add_argument("-p", "--prefix", nargs="+", type=str, default=[],
                         help=f"add new valid prefix/es to chaos-hab commit rules: {BLUE}{GITHUB_LINK}{OFF}")
     parser.add_argument("path", nargs="?", type=str, default=COMMIT_EDITMSG,
                         help="the path of commit message file")
@@ -183,7 +182,7 @@ def is_valid_prefix(msg: str, section="") -> bool:
         print(f"{RED}ERROR: capitalise {section}!{OFF}\n")
         is_valid = False
     if not is_valid_prefix:
-        nl = "...\n       "
+        nl = "...\n\t\t\t\t\t\t\t"
         print(f"{RED}\
 ERROR: wrong {section} prefix!\n{YELLOW}\
 HINT:  you can add new prefixes as an {BLUE}args: {YELLOW}in {BLUE}.pre-commit-config.yaml\n{YELLOW}\

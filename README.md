@@ -15,9 +15,9 @@ Add this to your ```.pre-commit-config.yaml```
     rev: v0.2.5
     hooks:
     -   id: commit-msg-hookcs
-        # args is optional, the default length limit is 72
+        # add additional valid prefixes
+        args: [--prefix, Prefix1, Prefix2, ...]
         stages: [commit-msg]
-        args: [--max-msg-length=<number>, new_prefix1, new_prefix2, ...]
  ```   
  Update to the latest release (optional)
   ```
