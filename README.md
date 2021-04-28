@@ -15,10 +15,17 @@ Add this to your ```.pre-commit-config.yaml```
     rev: v0.2.5
     hooks:
     -   id: commit-msg-hookcs
-        # add additional valid prefixes separated by a comma after the "--prefix" keyword(optional)
-        args: [--prefix]
         stages: [commit-msg]
- ```   
+ ```
+ #### Add valid prefixes(optional)
+ Add additional prefixes as an ```args:``` separated by ```,``` after the keyword ```--prefix```  and end with the delimiter ```--```
+ #### Example
+ ```
+ hooks:
+    -   id: commit-msg-hookcs
+        args: [--prefix, Check, Modify, --]
+        stages: [commit-msg]
+ ```
  Update to the latest release (optional)
   ```
   pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git

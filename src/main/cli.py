@@ -34,7 +34,7 @@ MIN_WORDS = 2
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
 GITHUB_LINK = "https://github.com/dimaka-wix/commit-msg-hook.git"
 MSG_EXAMPLE = f"{GREEN}\n\
-EXAMPLE:\n\
+EXAMPLE:\n{GREEN}\
 \tRefactor foo function in ...\n{CYAN}\
 <body is optional, adding it leave an empty line here>\n{GREEN}\
 \t- Fix ...\n\
@@ -42,9 +42,9 @@ EXAMPLE:\n\
 \t- Remove ...\n{YELLOW}\
 hint:\tto read chaos-hum team rules visit: {BLUE}{GITHUB_LINK}{OFF}\n"
 
-default_prefixes = ["Add ", "Change ", "Create ", "Disable ", "Fix ",
+default_prefixes = {"Add ", "Change ", "Create ", "Disable ", "Fix ",
                     "Merge ", "Move ", "Refactor ", "Release ",
-                    "Remove ", "Rename ", "Tslint ", "Update "]
+                    "Remove ", "Rename ", "Tslint ", "Update "}
 
 
 def main():
@@ -60,13 +60,14 @@ def main():
                         help="the path of commit message file")
     args = parser.parse_args()
 
+    # update valid prefixes pool
     global default_prefixes
-    default_prefixes = default_prefixes + args.prefix
+    default_prefixes = default_prefixes.union(
+        set(["{} ".format(pref.capitalize()) for pref in args.prefix]))
     msg = read_msg(args.path)
     if not msg.strip():
         print(f"ֿ{RED}error:\tcommit message can't be empty!{OFF}\n")
         sys.exit(1)
-    print(msg)
     run_hook(msg)
 
 
@@ -74,7 +75,7 @@ def read_msg(path: str) -> str:
     """
     Extract commit message content.
 
-    Try to read the message on the given path. 
+    Try to read the message on the given path.
     If fail, abort commit(exit nonzero), display appropriate error and hint.
 
     Args:
@@ -121,7 +122,7 @@ def validate_subj_line(msg: str) -> str:
     Args:
         msg (str): The commit message.
     Returns:
-        str: The detected errors(empty in a case of no errors). 
+        str: The detected errors(empty in a case of no errors).
     """
     subject = msg.splitlines()[0]
     section = "subject line"
@@ -149,13 +150,14 @@ def validate_body(msg: str) -> str:
         if body[0].strip() != "":
             errors += f"{RED}error:\tseparate subject from body with a blank line!{OFF}\n"
         section = "message body lines"
-        for line in body[1:]:
+        for line in body:
             line = line.strip()
-            line = line[1:].lstrip() if line[0] == "-" else line
-            meaningful_errors = check_meaningful(line, section)
-            prefix_errors = check_prefix(line, section)
-            ending_errors = check_ending(line, section)
-            errors += meaningful_errors + prefix_errors + ending_errors
+            if line:
+                line = line[1:].lstrip() if line[0] == "-" else line
+                meaningful_errors = check_meaningful(line, section)
+                prefix_errors = check_prefix(line, section)
+                ending_errors = check_ending(line, section)
+                errors += meaningful_errors + prefix_errors + ending_errors
     return errors
 
 
@@ -202,8 +204,8 @@ def check_prefix(msg: str, section="") -> str:
         delimiter = "...\n\t"
         errors += f"{RED}\
 error:\twrong {section} prefix!\n{YELLOW}\
-hint:\tyou can add new prefixes as an {GREEN}args: {YELLOW}in {GREEN}.pre-commit-config.yaml\n{YELLOW}\
-\totherwise, replace prefix with one of the following options:\n{YELLOW}\
+hint:\tyou can add new prefixes as an {CYAN}args: {YELLOW}in {CYAN}.pre-commit-config.yaml\n{YELLOW}\
+\totherwise, replace prefix with one of the following options:\n{CYAN}\
 \t{delimiter.join(default_prefixes)}...{OFF}\n"
     return errors
 
@@ -222,7 +224,7 @@ def check_ending(msg: str, section="") -> str:
     """
     errors = ""
     if msg.rstrip().endswith("."):
-        errors += f"\n{RED}error:\tdo not end {section} with a period!{OFF}"
+        errors += f"{RED}error:\tdo not end {section} with a period!{OFF}\n"
     return errors
 
 
