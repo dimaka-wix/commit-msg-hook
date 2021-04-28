@@ -15,7 +15,7 @@ Add this to your ```.pre-commit-config.yaml```
     rev: v0.2.5
     hooks:
     -   id: commit-msg-hookcs
-        # add additional valid prefixes seperated by comma after keyword(optional)
+        # add additional valid prefixes separated by a comma after the "--prefix" keyword(optional)
         args: [--prefix]
         stages: [commit-msg]
  ```   
