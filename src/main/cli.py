@@ -11,26 +11,37 @@ import argparse
 
 
 __all__ = ["main"]
+
 OFF = "\033[0;0m"
-WHITE = '\033[37m'
-BLACK = '\033[30m'
-RED = '\033[31m'
-BLUE = '\033[34m'
-CYAN = '\033[36m'
-GREEN = '\033[32m'
-VIOLET = '\033[35m'
-YELLOW = '\033[33m'
-FILLER = '\033[;7m'
-WHITEFONE = FILLER+'\033[37m'
-BLACKFONE = FILLER+'\033[30m'
-REDFONE = FILLER+'\033[31m'
-BLUEFONE = FILLER+'\033[34m'
-GREENFONE = FILLER+'\033[32m'
-YELLOWFONE = FILLER+'\033[33m'
+WHITE = OFF + '\033[37m'
+BLACK = OFF + '\033[30m'
+RED = OFF + '\033[31m'
+BLUE = OFF + '\033[34m'
+CYAN = OFF + '\033[36m'
+GREEN = OFF + '\033[32m'
+VIOLET = OFF + '\033[35m'
+YELLOW = OFF + '\033[33m'
+FILLER = OFF + '\033[;7m'
+WHITEFONE = FILLER + '\033[37m'
+BLACKFONE = FILLER + '\033[30m'
+REDFONE = FILLER + '\033[31m'
+BLUEFONE = FILLER + '\033[34m'
+GREENFONE = FILLER + '\033[32m'
+VIOLETFONE = FILLER + '\033[35m'
+YELLOWFONE = FILLER + '\033[33m'
 
 MIN_WORDS = 2
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
 GITHUB_LINK = "https://github.com/dimaka-wix/commit-msg-hook.git"
+MSG_EXAMPLE = f"{GREEN}\n\
+EXAMPLE:\n\
+\tRefactor foo function in ...\n{CYAN}\
+<body is optional, adding it leave an empty line here>\n{GREEN}\
+\t- Fix ...\n\
+\t- Add ...\n\
+\t- Remove ...\n{YELLOW}\
+hint:\tto read chaos-hum team rules visit: {BLUE}{GITHUB_LINK}{OFF}\n"
+
 default_prefixes = ["Add ", "Change ", "Create ", "Disable ", "Fix ",
                     "Merge ", "Move ", "Refactor ", "Release ",
                     "Remove ", "Rename ", "Tslint ", "Update "]
@@ -53,16 +64,18 @@ def main():
     default_prefixes = default_prefixes + args.prefix
     msg = read_msg(args.path)
     if not msg.strip():
-        print(f"ֿ{RED}ERROR: commit message can't be empty!{OFF}\n")
+        print(f"ֿ{RED}error:\tcommit message can't be empty!{OFF}\n")
         sys.exit(1)
+    print(msg)
     run_hook(msg)
 
 
 def read_msg(path: str) -> str:
     """
-    Get commit message content.
+    Extract commit message content.
 
-    Try to get the message on the given path. If fail, abort commit(exit nonzero), display appropriate error and hint.
+    Try to read the message on the given path. 
+    If fail, abort commit(exit nonzero), display appropriate error and hint.
 
     Args:
         path (str): The path of the file with commit message.
@@ -75,8 +88,8 @@ def read_msg(path: str) -> str:
             msg = file.read()
     except FileNotFoundError:
         print(f"\n{RED}\
-ERROR: the path '{path}' not found!\n{YELLOW}\
-HINT:  the commit message is usually saved in {COMMIT_EDITMSG}{OFF}\n")
+error:\tthe path '{path}' not found!\n{YELLOW}\
+hint:\tthe commit message is usually saved in {COMMIT_EDITMSG}{OFF}\n")
         sys.exit(1)
     return msg
 
@@ -89,141 +102,145 @@ def run_hook(msg: str):
     Otherwise exit zero and allow the `git commit` command.
 
     Args:
-        msg (str): The commit message to check.
+        msg (str): The commit message to validate.
     """
-    if not is_valid_subj_line(msg) or not is_valid_body(msg):
-        show_example()
+    subj_line_errors = validate_subj_line(msg)
+    body_errors = validate_body(msg)
+    if subj_line_errors or body_errors:
+        print(subj_line_errors + body_errors + MSG_EXAMPLE)
         sys.exit(1)
     sys.exit(0)
 
 
-def is_valid_subj_line(msg: str) -> bool:
+def validate_subj_line(msg: str) -> str:
     """
     Validate the subject line of a commit message.
 
-    Extract subject line of commit message and validate it according to chaos-hub team commit rules.
+    Slice subject line of commit message and validate it according to chaos-hub team commit rules.
 
     Args:
         msg (str): The commit message.
     Returns:
-        bool: The result of the validation.
+        str: The detected errors(empty in a case of no errors). 
     """
-    subj = msg.splitlines()[0]
-    sect = "subject line"
-    return is_meaningful(subj, sect) and is_valid_prefix(subj, sect) and is_valid_ending(subj, sect)
+    subject = msg.splitlines()[0]
+    section = "subject line"
+    meaningful_errors = check_meaningful(subject, section)
+    prefix_errors = check_prefix(subject, section)
+    ending_errors = check_ending(subject, section)
+    errors = meaningful_errors + prefix_errors + ending_errors
+    return errors
 
 
-def is_valid_body(msg: str) -> bool:
+def validate_body(msg: str) -> str:
     """
     Validate the body of a commit message.
 
-    Extract body of commit message and validate it according to chaos-hub team commit rules.
+    Slice body of commit message and validate it according to chaos-hub team commit rules.
 
     Args:
         msg (str): The commit message.
     Returns:
-        bool: The result of the validation.
+        str: The detected errors(empty in a case of no errors)
     """
-    is_valid = True
+    errors = ""
     if len(msg.splitlines()) > 1:
         body = msg.splitlines()[1:]
         if body[0].strip() != "":
-            print(f"{RED}ERROR: separate subject from body with a blank line!{OFF}\n")
-            is_valid = False
-        sect = "message body lines"
-        for row in body[1:]:
-            row = row.strip()
-            row = row[1:].lstrip() if row[0] == "-" else row
-            if not is_meaningful(row, sect) or not is_valid_prefix(row, sect) or not is_valid_ending(row, sect):
-                is_valid = False
-    return is_valid
+            errors += f"{RED}error:\tseparate subject from body with a blank line!{OFF}\n"
+        section = "message body lines"
+        for line in body[1:]:
+            line = line.strip()
+            line = line[1:].lstrip() if line[0] == "-" else line
+            meaningful_errors = check_meaningful(line, section)
+            prefix_errors = check_prefix(line, section)
+            ending_errors = check_ending(line, section)
+            errors += meaningful_errors + prefix_errors + ending_errors
+    return errors
 
 
-def is_meaningful(msg: str, section="") -> bool:
+def check_meaningful(msg: str, section="") -> str:
     """
-    Check if a commit message contains more than 1 word.
+    Check if a commit message less than 2 word.
 
-    If message contains less than 2 words, display appropriate error and continue with other checks.
+    If message contains less than 2 words, generate an appropriate error message.
 
     Args:
         msg (str): The part of commit mesage(subject line or body).
         section (str, optional): The section where the error occurred. Defaults to empty string.
 
     Returns:
-        bool: The result of the validation.
+        str: The detected errors(empty in a case of no errors).
     """
-    is_valid = True
+    errors = ""
     words = msg.strip().split()
     # slice period at the end of the line
     words = words[:-1] if words[-1].strip() == "." else words
     if len(words) < MIN_WORDS:
-        print(
-            f"{RED}ERROR: one-word message is not informative, add more details to {section}!{OFF}\n")
-        is_valid = False
-    return is_valid
+        errors += f"{RED}error:\tone-word message is not informative, add more details to {section}!{OFF}\n"
+    return errors
 
 
-def is_valid_prefix(msg: str, section="") -> bool:
+def check_prefix(msg: str, section="") -> str:
     """
     Validate the prefix of the message.
 
-    If validation failed, display appropriate error and hint and continue with other checks.
+    If validation failed, generate an appropriate error message and a hint.
 
     Args:
         msg (str): The part of commit mesage(subject line or body).
         section (str, optional): The section where the error occurred. Defaults to empty string.
     Returns:
-        bool: The result of the validation.
+        str: The detected errors(empty in a case of no errors).
     """
     global default_prefixes
-    is_valid = True
+    errors = ""
     is_valid_prefix = msg.lstrip().startswith(tuple(default_prefixes))
     if msg[0].islower():
-        print(f"{RED}ERROR: capitalise {section}!{OFF}\n")
-        is_valid = False
+        errors += f"{RED}error:\tcapitalise {section}!{OFF}\n"
     if not is_valid_prefix:
-        nl = "...\n\t\t\t\t\t\t\t"
-        print(f"{RED}\
-ERROR: wrong {section} prefix!\n{YELLOW}\
-HINT:  you can add new prefixes as an {BLUE}args: {YELLOW}in {BLUE}.pre-commit-config.yaml\n{YELLOW}\
-       otherwise, replace prefix with one of the following options:\n{YELLOW}\
-       {nl.join(default_prefixes)}...{OFF}")
-        is_valid = False
-    return is_valid
+        delimiter = "...\n\t"
+        errors += f"{RED}\
+error:\twrong {section} prefix!\n{YELLOW}\
+hint:\tyou can add new prefixes as an {GREEN}args: {YELLOW}in {GREEN}.pre-commit-config.yaml\n{YELLOW}\
+\totherwise, replace prefix with one of the following options:\n{YELLOW}\
+\t{delimiter.join(default_prefixes)}...{OFF}\n"
+    return errors
 
 
-def is_valid_ending(msg: str, section="") -> bool:
+def check_ending(msg: str, section="") -> str:
     """
     Check whether the message ends with a dot or not.
 
-    If the message ends with a dot display appropriate error and hint and continue validation.
+    If the message ends with a dot, generate an appropriate error message.
 
     Args:
         msg (str): The part of commit mesage(subject line or body).
         section (str, optional): The section where the error occurred. Defaults to empty string.
+    Returns:
+        str: The detected errors(empty in a case of no errors).
     """
-    is_valid = True
+    errors = ""
     if msg.rstrip().endswith("."):
-        print(f"\n{RED}ERROR: do not end {section} with a period!{OFF}")
-        is_valid = False
-    return is_valid
-
-
-def show_example():
-    """
-    Display a commit message example.
-
-    The example follows chaos-hub team commit rules.
-    """
-    print(f"{GREEN}\n\
-EXAMPLE:\n\
-  Refactor foo function in ...\n{BLUE}\
-<body is optional, adding it leave an empty line here>\n{GREEN}\
-  - Fix ...\n\
-  - Add ...\n\
-  - Remove ... \n{YELLOW}\
-HINT: to read chaos-hum team rules visit: {BLUE}{GITHUB_LINK}{OFF}\n")
+        errors += f"\n{RED}error:\tdo not end {section} with a period!{OFF}"
+    return errors
 
 
 if __name__ == "__main__":
     exit(main())
+
+
+# def show_example():
+#     """
+#     Display a commit message example.
+
+#     The example follows chaos-hub team commit rules.
+#     """
+#     print(f"{GREEN}\n\
+# EXAMPLE:\n\
+# \tRefactor foo function in ...\n{BLUE}\
+# <body is optional, adding it leave an empty line here>\n{GREEN}\
+# \t- Fix ...\n\
+# \t- Add ...\n\
+# \t- Remove ... \n{YELLOW}\
+# \nHINT:\tto read chaos-hum team rules visit: {BLUE}{GITHUB_LINK}{OFF}\n")
