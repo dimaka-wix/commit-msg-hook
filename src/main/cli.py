@@ -30,21 +30,28 @@ GREENFONE = FILLER + '\033[32m'
 VIOLETFONE = FILLER + '\033[35m'
 YELLOWFONE = FILLER + '\033[33m'
 
+default_prefixes = {"Add ", "Change ", "Create ", "Disable ", "Fix ",
+                    "Merge ", "Move ", "Refactor ", "Release ",
+                    "Remove ", "Rename ", "Tslint ", "Update "}
+
 MIN_WORDS = 2
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
 GITHUB_LINK = "https://github.com/dimaka-wix/commit-msg-hook.git"
-MSG_EXAMPLE = f"{GREEN}\n\
-EXAMPLE:\n{GREEN}\
+
+DELIMITER = "...\n\t"
+HINT = f"{YELLOW}\
+hint:\tyou can add new prefixes as an {CYAN}args: {YELLOW}in {CYAN}.pre-commit-config.yaml\n{YELLOW}\
+\totherwise, replace prefix with one of the following options:\n{CYAN}\
+\t{DELIMITER.join(default_prefixes)}...\n"
+
+EXAMPLE = f"{GREEN}\n\
+EXAMPLE:\n\
 \tRefactor foo function in ...\n{CYAN}\
 <body is optional, adding it leave an empty line here>\n{GREEN}\
 \t- Fix ...\n\
 \t- Add ...\n\
 \t- Remove ...\n{YELLOW}\
 hint:\tto read chaos-hum team rules visit: {BLUE}{GITHUB_LINK}{OFF}\n"
-
-default_prefixes = {"Add ", "Change ", "Create ", "Disable ", "Fix ",
-                    "Merge ", "Move ", "Refactor ", "Release ",
-                    "Remove ", "Rename ", "Tslint ", "Update "}
 
 
 def main():
@@ -108,7 +115,7 @@ def run_hook(msg: str):
     subj_line_errors = validate_subj_line(msg)
     body_errors = validate_body(msg)
     if subj_line_errors or body_errors:
-        print(subj_line_errors + body_errors + MSG_EXAMPLE)
+        print(subj_line_errors + body_errors + HINT + EXAMPLE)
         sys.exit(1)
     sys.exit(0)
 
@@ -124,11 +131,12 @@ def validate_subj_line(msg: str) -> str:
     Returns:
         str: The detected errors(empty in a case of no errors).
     """
+    line = 1
     subject = msg.splitlines()[0]
     section = "subject line"
-    meaningful_errors = check_meaningful(subject, section)
-    prefix_errors = check_prefix(subject, section)
-    ending_errors = check_ending(subject, section)
+    meaningful_errors = check_meaningful(subject, line, section)
+    prefix_errors = check_prefix(subject, line, section)
+    ending_errors = check_ending(subject, line, section)
     errors = meaningful_errors + prefix_errors + ending_errors
     return errors
 
@@ -142,26 +150,51 @@ def validate_body(msg: str) -> str:
     Args:
         msg (str): The commit message.
     Returns:
-        str: The detected errors(empty in a case of no errors)
+        str: The detected errors(empty in a case of no errors).
     """
     errors = ""
     if len(msg.splitlines()) > 1:
         body = msg.splitlines()[1:]
         if body[0].strip() != "":
-            errors += f"{RED}error:\tseparate subject from body with a blank line!{OFF}\n"
-        section = "message body lines"
-        for line in body:
-            line = line.strip()
-            if line:
-                line = line[1:].lstrip() if line[0] == "-" else line
-                meaningful_errors = check_meaningful(line, section)
-                prefix_errors = check_prefix(line, section)
-                ending_errors = check_ending(line, section)
-                errors += meaningful_errors + prefix_errors + ending_errors
+            errors += f"{RED}error:\tseparate the subject line from the message body with a blank line{OFF}\n"
+        section = "body line"
+        for i in range(len(body)):
+            line_msg = body[i].strip()
+            if line_msg:
+                line_msg = remove_bullet(line_msg)
+                if line_msg:
+                    meaningful_errors = check_meaningful(
+                        line_msg, i + 1, section)
+                    prefix_errors = check_prefix(line_msg, i + 1, section)
+                    ending_errors = check_ending(line_msg, i + 1, section)
+                    errors += meaningful_errors + prefix_errors + ending_errors
+                else:
+                    errors += f"{RED}error:\tmessage required [{section}: {i + 1}]{OFF}\n"
     return errors
 
 
-def check_meaningful(msg: str, section="") -> str:
+def remove_bullet(body_line: str) -> str:
+    """
+    Remove line bullet if exist.
+
+    Ex: get `* Fix bugs` return `Fix bugs`.
+
+    Args:
+        body_line (str): The single line of message body.
+
+    Returns:
+        str: The message without non-alpha characters at the beginning of the line.
+    """
+    content = ""
+    if body_line:
+        for i in range(len(body_line)):
+            if body_line[i].isalpha():
+                content = body_line[i:]
+                break
+    return content
+
+
+def check_meaningful(msg: str, line: int, section="") -> str:
     """
     Check if a commit message less than 2 word.
 
@@ -169,6 +202,7 @@ def check_meaningful(msg: str, section="") -> str:
 
     Args:
         msg (str): The part of commit mesage(subject line or body).
+        line (int): The line where the error occurred.
         section (str, optional): The section where the error occurred. Defaults to empty string.
 
     Returns:
@@ -179,18 +213,19 @@ def check_meaningful(msg: str, section="") -> str:
     # slice period at the end of the line
     words = words[:-1] if words[-1].strip() == "." else words
     if len(words) < MIN_WORDS:
-        errors += f"{RED}error:\tone-word message is not informative, add more details to {section}!{OFF}\n"
+        errors += f"{RED}error:\tone-word message is not informative, add more details [{section}: {line}]{OFF}\n"
     return errors
 
 
-def check_prefix(msg: str, section="") -> str:
+def check_prefix(msg: str, line: int, section="") -> str:
     """
     Validate the prefix of the message.
 
-    If validation failed, generate an appropriate error message and a hint.
+    If validation failed, generate an appropriate error message.
 
     Args:
         msg (str): The part of commit mesage(subject line or body).
+        line (int): The line where the error occurred.
         section (str, optional): The section where the error occurred. Defaults to empty string.
     Returns:
         str: The detected errors(empty in a case of no errors).
@@ -199,18 +234,13 @@ def check_prefix(msg: str, section="") -> str:
     errors = ""
     is_valid_prefix = msg.lstrip().startswith(tuple(default_prefixes))
     if msg[0].islower():
-        errors += f"{RED}error:\tcapitalise {section}!{OFF}\n"
+        errors += f"{RED}error:\tcapitalise the first word [{section}: {line}]{OFF}\n"
     if not is_valid_prefix:
-        delimiter = "...\n\t"
-        errors += f"{RED}\
-error:\twrong {section} prefix!\n{YELLOW}\
-hint:\tyou can add new prefixes as an {CYAN}args: {YELLOW}in {CYAN}.pre-commit-config.yaml\n{YELLOW}\
-\totherwise, replace prefix with one of the following options:\n{CYAN}\
-\t{delimiter.join(default_prefixes)}...{OFF}\n"
+        errors += f"{RED}error:\twrong prefix [{section}: {line}]{OFF}\n"
     return errors
 
 
-def check_ending(msg: str, section="") -> str:
+def check_ending(msg: str, line: int, section="") -> str:
     """
     Check whether the message ends with a dot or not.
 
@@ -218,15 +248,19 @@ def check_ending(msg: str, section="") -> str:
 
     Args:
         msg (str): The part of commit mesage(subject line or body).
+        line (int): The line where the error occurred.
         section (str, optional): The section where the error occurred. Defaults to empty string.
     Returns:
         str: The detected errors(empty in a case of no errors).
     """
     errors = ""
     if msg.rstrip().endswith("."):
-        errors += f"{RED}error:\tdo not end {section} with a period!{OFF}\n"
+        errors += f"{RED}error:\tdo not end the line with a period [{section}: {line}]{OFF}\n"
     return errors
 
 
 if __name__ == "__main__":
+    msg = "addd a feature.\n - Fix \n * \n # move a."
+    print(msg)
+    print(run_hook(msg))
     exit(main())

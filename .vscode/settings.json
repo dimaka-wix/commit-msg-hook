@@ -1,6 +1,8 @@
 {
     "python.pythonPath": "/usr/local/bin/python3",
+    "python.languageServer": "None",
     "python.linting.flake8Args": [
-        "--max-line-length=120"
+        "--max-line-length=120",
+        "--ignore=W504 D100 D101 D102 D103 D104 D107"
     ]
 }
