@@ -41,8 +41,8 @@ GITHUB_LINK = "https://github.com/dimaka-wix/commit-msg-hook.git"
 DELIMITER = "...\n\t"
 HINT = f"{YELLOW}\
 hint:\tyou can add new prefixes as an {CYAN}args: {YELLOW}in {CYAN}.pre-commit-config.yaml\n{YELLOW}\
-\totherwise, replace prefix with one of the following options:\n{CYAN}\
-\t{DELIMITER.join(default_prefixes)}...\n"
+\totherwise, replace prefix with one of the following options:{CYAN}\n\
+\t{DELIMITER.join(default_prefixes)}...\n{OFF}"
 
 EXAMPLE = f"{GREEN}\n\
 EXAMPLE:\n\
@@ -70,7 +70,7 @@ def main():
     # update valid prefixes pool
     global default_prefixes
     default_prefixes = default_prefixes.union(
-        set(["{} ".format(pref.capitalize()) for pref in args.prefix]))
+        set([prefix.capitalize() for prefix in args.prefix]))
     msg = read_msg(args.path)
     if not msg.strip():
         print(f"ֿ{RED}error:\tcommit message can't be empty!{OFF}\n")
@@ -232,7 +232,8 @@ def check_prefix(msg: str, line: int, section="") -> str:
     """
     global default_prefixes
     errors = ""
-    is_valid_prefix = msg.lstrip().startswith(tuple(default_prefixes))
+    is_valid_prefix = msg.lstrip().lower().startswith(
+        tuple([pref.lower() for pref in default_prefixes]))
     if msg[0].islower():
         errors += f"{RED}error:\tcapitalise the first word [{section}: {line}]{OFF}\n"
     if not is_valid_prefix:
@@ -260,7 +261,4 @@ def check_ending(msg: str, line: int, section="") -> str:
 
 
 if __name__ == "__main__":
-    msg = "addd a feature.\n - Fix \n * \n # move a."
-    print(msg)
-    print(run_hook(msg))
     exit(main())
