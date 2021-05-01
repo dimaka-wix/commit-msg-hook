@@ -72,6 +72,10 @@ def main():
     default_prefixes = default_prefixes.union(
         set([prefix.capitalize() for prefix in args.prefix]))
     msg = read_msg(args.path)
+    print(f">>>> args: {args}")
+    print(f">>>> args.prefix: {args.prefix}")
+    print(f">>>> args.path: {args.path}")
+    print(f">>>> message: {msg}")
     if not msg.strip():
         print(f"ֿ{RED}error:\tcommit message can't be empty!{OFF}\n")
         sys.exit(1)
