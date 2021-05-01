@@ -1,5 +1,5 @@
 # commit-msg-hook
-This hook is made as custom plugins under the [pre-commit](https://pre-commit.com/) hook framework and checks if commit message matches the chaos-hub team commit rules.
+This hook is made as a custom plugin under the [pre-commit](https://pre-commit.com/) hook framework and checks if commit message matches the chaos-hub team commit rules.
 
 ### Installation 
 ```
