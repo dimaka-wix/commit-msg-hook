@@ -12,7 +12,7 @@ See [pre-commit](https://pre-commit.com/) for instructions
 Add this to your ```.pre-commit-config.yaml```
 ```
 -   repo: hhttps://github.com/dimaka-wix/commit-msg-hook.git
-    rev: v0.2.5
+    rev: v0.2.6
     hooks:
     -   id: commit-msg-hookcs
         stages: [commit-msg]
