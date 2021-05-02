@@ -1,36 +1,45 @@
 # commit-msg-hook
 This hook is made as a custom plugin under the [pre-commit](https://pre-commit.com/) hook framework and checks if commit message matches the chaos-hub team commit rules.
 
-### Installation 
+## Installation 
 ```
 pip install commit-msg-hook
 ```
-### Using commit-msg-hook with pre-commit 
+## Using commit-msg-hook with pre-commit 
 
-See [pre-commit](https://pre-commit.com/) for instructions
-
-Add this to your ```.pre-commit-config.yaml```
+For more details see: [pre-commit](https://pre-commit.com/)
+### Install pre-commit package manager 
 ```
--   repo: hhttps://github.com/dimaka-wix/commit-msg-hook.git
-    rev: v0.2.6
-    hooks:
-    -   id: commit-msg-hookcs
-        stages: [commit-msg]
- ```
- #### Add valid prefixes(optional)
- Add additional prefixes as an ```args:``` separated by ```,``` after the keyword ```--prefix```  and end with the delimiter ```--```
- #### Example
- ```
- hooks:
-    -   id: commit-msg-hookcs
-        args: [--prefix, Check, Modify, --]
-        stages: [commit-msg]
- ```
- Update to the latest release (optional)
-  ```
-  pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git
-  ```
- ### Commit Rules
+pip install pre-commit
+```
+
+
+### Create a file ```.pre-commit-config.yaml``` in the root folder with the following configuration
+```
+- repo: https://github.com/dimaka-wix/commit-msg-hook.git
+  rev: v0.2.7
+  hooks:
+    - id: commit-msg-hook
+      stages: [commit-msg]
+```
+### Add valid prefixes(optional)
+Add additional prefixes as an ```args:``` separated by ```,``` after the keyword ```--prefix```  and end with the delimiter ```--```
+#### Example
+```
+hooks:
+  - id: commit-msg-hook
+    args: [--prefix, Check, Modify, --]
+    stages: [commit-msg]
+```
+### To enable commit-msg hook with pre-commit run:
+```
+pre-commit install --hook-type commit-msg
+```
+### Update to the latest release (optional)
+```
+pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git
+```
+### Commit Rules
 
 * _Write up to **72** characters(preventing ellipsis in git)_
 * _Capitalise the subject line_
@@ -59,9 +68,9 @@ Add this to your ```.pre-commit-config.yaml```
 ```
 Refactor Z function in X file from Y component
 <optional part, adding it leave an empty line here>
-- Fix ...
-- Add ...
-- Update ...
+* Fix ...
+* Add ...
+* Update ...
  ```
  ### Bypass the hook in one of the following ways
 ```SKIP=commit-msg-hook git commit -m "Your message"```

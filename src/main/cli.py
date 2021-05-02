@@ -48,9 +48,9 @@ EXAMPLE = f"{GREEN}\n\
 EXAMPLE:\n\
 \tRefactor foo function in ...\n{CYAN}\
 <body is optional, adding it leave an empty line here>\n{GREEN}\
-\t- Fix ...\n\
-\t- Add ...\n\
-\t- Remove ...\n{YELLOW}\
+\t* Fix ...\n\
+\t* Add ...\n\
+\t* Remove ...\n{YELLOW}\
 hint:\tto read chaos-hum team rules visit: {BLUE}{GITHUB_LINK}{OFF}\n"
 
 
@@ -72,10 +72,6 @@ def main():
     default_prefixes = default_prefixes.union(
         set([prefix.capitalize() for prefix in args.prefix]))
     msg = read_msg(args.path)
-    print(f">>>> args: {args}")
-    print(f">>>> args.prefix: {args.prefix}")
-    print(f">>>> args.path: {args.path}")
-    print(f">>>> message: {msg}")
     if not msg.strip():
         print(f"ֿ{RED}error:\tcommit message can't be empty!{OFF}\n")
         sys.exit(1)
