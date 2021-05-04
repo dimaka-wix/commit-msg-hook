@@ -41,8 +41,7 @@ GITHUB_LINK = "https://github.com/dimaka-wix/commit-msg-hook.git"
 DELIMITER = "...\n\t"
 HINT = f"{YELLOW}\
 hint:\tyou can add new prefixes as an {CYAN}args: {YELLOW}in {CYAN}.pre-commit-config.yaml\n{YELLOW}\
-\totherwise, replace prefix with one of the following options:{CYAN}\n\
-\t{DELIMITER.join(default_prefixes)}...\n{OFF}"
+\totherwise, replace prefix with one of the following options:{CYAN}\n"
 
 EXAMPLE = f"{GREEN}\n\
 EXAMPLE:\n\
@@ -70,7 +69,7 @@ def main():
     # update valid prefixes pool
     global default_prefixes
     default_prefixes = default_prefixes.union(
-        set([prefix.capitalize() for prefix in args.prefix]))
+        set([prefix.lower().capitalize() + " " for prefix in args.prefix]))
     msg = read_msg(args.path)
     if not msg.strip():
         print(f"ֿ{RED}error:\tcommit message can't be empty!{OFF}\n")
@@ -112,10 +111,13 @@ def run_hook(msg: str):
     Args:
         msg (str): The commit message to validate.
     """
+    global default_prefixes
     subj_line_errors = validate_subj_line(msg)
     body_errors = validate_body(msg)
     if subj_line_errors or body_errors:
-        print(subj_line_errors + body_errors + HINT + EXAMPLE)
+        print(subj_line_errors + body_errors +
+              HINT + f"\t{DELIMITER.join(default_prefixes)}...\n" +
+              EXAMPLE)
         sys.exit(1)
     sys.exit(0)
 
@@ -233,11 +235,15 @@ def check_prefix(msg: str, line: int, section="") -> str:
     global default_prefixes
     errors = ""
     is_valid_prefix = msg.lstrip().lower().startswith(
-        tuple([pref.lower() for pref in default_prefixes]))
+        tuple([prefix.lower() for prefix in default_prefixes]))
+    is_correct_casefold = msg.lstrip().startswith(
+        tuple([prefix for prefix in default_prefixes]))
     if msg[0].islower():
         errors += f"{RED}error:\tcapitalise the first word [{section}: {line}]{OFF}\n"
     if not is_valid_prefix:
         errors += f"{RED}error:\twrong prefix [{section}: {line}]{OFF}\n"
+    if is_valid_prefix and not is_correct_casefold:
+        errors += f"{RED}error:\twrong prefix case folding [{section}: {line}]{OFF}\n"
     return errors
 
 
