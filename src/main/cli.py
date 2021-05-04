@@ -85,7 +85,7 @@ def read_msg(path: str) -> str:
     If fail, abort commit(exit nonzero), display appropriate error and hint.
 
     Args:
-        path (str): The path of the file with commit message.
+        path (str): The path of the file with commit message
 
     Returns:
         str: The commit message.
