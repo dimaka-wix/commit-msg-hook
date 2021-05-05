@@ -65,7 +65,6 @@ def main():
     parser.add_argument("path", nargs="?", type=str, default=COMMIT_EDITMSG,
                         help="the path of commit message file")
     args = parser.parse_args()
-
     # update valid prefixes pool
     global default_prefixes
     default_prefixes = default_prefixes.union(
