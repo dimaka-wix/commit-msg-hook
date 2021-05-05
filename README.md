@@ -73,8 +73,6 @@ Refactor Z function in X file from Y component
 * Update ...
  ```
  ### Bypass the hook in one of the following ways
-```SKIP=commit-msg-hook git commit -m "Your message"```
-
-```git commit -m "Your message" --no-verify```
-
-```git commit -m "Your message" -n (not recommended)```
+- ```SKIP=commit-msg-hook git commit -m "Your message"```
+- ```git commit -m "Your message" --no-verify```
+- ```git commit -m "Your message" -n (not recommended)```
