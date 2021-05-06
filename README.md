@@ -42,10 +42,10 @@ pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git
 ### Commit Rules
 
 * _Write up to **72** characters(preventing ellipsis in git)_
-* _Capitalise the subject line_
+* _Capitalize the subject line_
 * _Do not end the subject line with a period_
 * _Use the imperative mood(e.g. **Add** instead of **Added**)_
-* _Start message with one of following prefixes_
+* _Start a message with one of the following prefixes_
   - _**Add ...**_
   - _**Change ...**_
   - _**Create ...**_
