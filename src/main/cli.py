@@ -149,9 +149,9 @@ def validate_body(msg: str) -> str:
     Slice body of commit message and validate it according to chaos-hub team commit rules.
 
     Args:
-        msg (str): The commit message.
+        msg (str): The commit message
     Returns:
-        str: The detected errors(empty in a case of no errors).
+        str: The detected errors(empty in a case of no errors)
     """
     errors = ""
     if len(msg.splitlines()) > 1:
