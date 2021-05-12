@@ -125,7 +125,7 @@ def validate_subj_line(msg: str) -> str:
     """
     Validate the subject line of a commit message.
 
-    Slice subject line of commit message and validate it according to chaos-hub team commit rules.
+    Slice subject line of commit message and validate it according to chaos-hub team commit rules
 
     Args:
         msg (str): The commit message.
