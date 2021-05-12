@@ -128,9 +128,9 @@ def validate_subj_line(msg: str) -> str:
     Slice subject line of commit message and validate it according to chaos-hub team commit rules
 
     Args:
-        msg (str): The commit message.
+        msg (str): The commit message
     Returns:
-        str: The detected errors(empty in a case of no errors).
+        str: The detected errors(empty in a case of no errors)
     """
     line = 1
     subject = msg.splitlines()[0]
