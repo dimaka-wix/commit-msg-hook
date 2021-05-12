@@ -181,10 +181,10 @@ def remove_bullet(body_line: str) -> str:
     Ex: get `* Fix bugs` return `Fix bugs`.
 
     Args:
-        body_line (str): The single line of message body.
+        body_line (str): The single line of message body
 
     Returns:
-        str: The message without non-alpha characters at the beginning of the line.
+        str: The message without non-alpha characters at the beginning of the line
     """
     content = ""
     if body_line:
