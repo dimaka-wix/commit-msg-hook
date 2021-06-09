@@ -22,15 +22,6 @@ pip install pre-commit
     - id: commit-msg-hook
       stages: [commit-msg]
 ```
-### Add valid prefixes(optional)
-Add additional prefixes as an ```args:``` separated by ```,``` after the keyword ```--prefix```  and end with the delimiter ```--```
-#### Example
-```
-hooks:
-  - id: commit-msg-hook
-    args: [--prefix, Check, Modify, --]
-    stages: [commit-msg]
-```
 ### To enable commit-msg hook with pre-commit run:
 ```
 pre-commit install --hook-type commit-msg
@@ -43,22 +34,8 @@ pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git
 
 * _Write up to **72** characters(preventing ellipsis in git)_
 * _Capitalize the subject line_
-* _Do not end the subject line with a period_
-* _Use the imperative mood(e.g. **Add** instead of **Added**)_
-* _Start a message with one of the following prefixes_
-  - _**Add ...**_
-  - _**Change ...**_
-  - _**Create ...**_
-  - _**Disable ...**_
-  - _**Fix ...**_
-  - _**Merge ...**_
-  - _**Move ...**_
-  - _**Refactor ...**_
-  - _**Release ...**_
-  - _**Remove ...**_
-  - _**Rename ...**_
-  - _**Tslint ...**_
-  - _**Update ...**_
+* _Do not end the subject line with any punctuation character_
+* _Use the imperative mood(e.g. **Add** instead of **Added** or **Adds**)_
 * _Use the description to explain what and why vs how_
 * _Press **Shift+Enter** to create a new line and to write more characters then vscode lets you_
 * _**Separate subject from body with a blank line!**_
@@ -67,7 +44,7 @@ pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git
 #### Example
 ```
 Refactor Z function in X file from Y component
-<optional part, adding it leave an empty line here>
+
 * Fix ...
 * Add ...
 * Update ...
