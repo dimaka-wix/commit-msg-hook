@@ -6,50 +6,51 @@ hook framework and checks if commit message matches
 the chaos-hub team commit rules.
 """
 
-import sys
 import argparse
+import sys
 
+import nltk
+from nltk.tokenize import word_tokenize
 
-__all__ = ["main"]
+import string
 
-OFF = "\033[0;0m"
-WHITE = OFF + '\033[37m'
-BLACK = OFF + '\033[30m'
-RED = OFF + '\033[31m'
-BLUE = OFF + '\033[34m'
-CYAN = OFF + '\033[36m'
-GREEN = OFF + '\033[32m'
-VIOLET = OFF + '\033[35m'
-YELLOW = OFF + '\033[33m'
-FILLER = OFF + '\033[;7m'
-WHITEFONE = FILLER + '\033[37m'
-BLACKFONE = FILLER + '\033[30m'
-REDFONE = FILLER + '\033[31m'
-BLUEFONE = FILLER + '\033[34m'
-GREENFONE = FILLER + '\033[32m'
-VIOLETFONE = FILLER + '\033[35m'
-YELLOWFONE = FILLER + '\033[33m'
+try:
+    nltk.data.find("tokenizers/punkt")
+    nltk.data.find("taggers/averaged_perceptron_tagger")
+except LookupError:
+    nltk.download("punkt")
+    nltk.download("averaged_perceptron_tagger")
 
-default_prefixes = {"Add ", "Change ", "Create ", "Disable ", "Fix ",
-                    "Merge ", "Move ", "Refactor ", "Release ",
-                    "Remove ", "Rename ", "Tslint ", "Update "}
+OFF = "\033[0m"
+WHITE = OFF + "\033[97m"
+BLACK = OFF + "\033[30m"
+RED = OFF + "\033[31m"
+GREEN = OFF + "\033[32m"
+YELLOW = OFF + "\033[33m"
+BLUE = OFF + "\033[34m"
+MAGENTA = OFF + "\033[35m"
+CAYAN = OFF + "\033[36m"
+DEFAULT = OFF + "\033[39m"
+
+FILLER = OFF + "\033[;7m"
+WHITEFONE = FILLER + "\033[37m"
+BLACKFONE = FILLER + "\033[30m"
+REDFONE = FILLER + "\033[31m"
+BLUEFONE = FILLER + "\033[34m"
+GREENFONE = FILLER + "\033[32m"
+VIOLETFONE = FILLER + "\033[35m"
+YELLOWFONE = FILLER + "\033[33m"
 
 MIN_WORDS = 2
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
 GITHUB_LINK = "https://github.com/dimaka-wix/commit-msg-hook.git"
 
-DELIMITER = "...\n\t"
-HINT = f"{YELLOW}\
-hint:\tyou can add new prefixes as an {CYAN}args: {YELLOW}in {CYAN}.pre-commit-config.yaml\n{YELLOW}\
-\totherwise, replace prefix with one of the following options:{CYAN}\n"
-
-EXAMPLE = f"{GREEN}\n\
+HINT = f"{GREEN}\n\
 EXAMPLE:\n\
-\tRefactor foo function in ...\n{CYAN}\
-<body is optional, adding it leave an empty line here>\n{GREEN}\
+\tRefactor foo function in ...\n{GREEN}\n\
 \t* Fix ...\n\
 \t* Add ...\n\
-\t* Remove ...\n{YELLOW}\
+\t* Remove ...\n{YELLOW}\n\
 hint:\tto read chaos-hum team rules visit: {BLUE}{GITHUB_LINK}{OFF}\n"
 
 
@@ -60,15 +61,9 @@ def main():
     Extract arguments from command line and run the hook logic
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--prefix", nargs="+", type=str, default=[],
-                        help=f"add new valid prefix/es to chaos-hab commit rules: {BLUE}{GITHUB_LINK}{OFF}")
     parser.add_argument("path", nargs="?", type=str, default=COMMIT_EDITMSG,
                         help="the path of commit message file")
     args = parser.parse_args()
-    # update valid prefixes pool
-    global default_prefixes
-    default_prefixes = default_prefixes.union(
-        set([prefix.lower().capitalize() + " " for prefix in args.prefix]))
     msg = read_msg(args.path)
     if not msg.strip():
         print(f"ֿ{RED}error:\tcommit message can't be empty!{OFF}\n")
@@ -114,9 +109,7 @@ def run_hook(msg: str):
     subj_line_errors = validate_subj_line(msg)
     body_errors = validate_body(msg)
     if subj_line_errors or body_errors:
-        print(subj_line_errors + body_errors +
-              HINT + f"\t{DELIMITER.join(default_prefixes)}...\n" +
-              EXAMPLE)
+        print(subj_line_errors + body_errors + HINT)
         sys.exit(1)
     sys.exit(0)
 
@@ -137,8 +130,9 @@ def validate_subj_line(msg: str) -> str:
     section = "subject line"
     meaningful_errors = check_meaningful(subject, line, section)
     prefix_errors = check_prefix(subject, line, section)
+    imperatives_errors = check_imperative_mode(subject, line, section)
     ending_errors = check_ending(subject, line, section)
-    errors = meaningful_errors + prefix_errors + ending_errors
+    errors = meaningful_errors + prefix_errors + imperatives_errors + ending_errors
     return errors
 
 
@@ -167,10 +161,12 @@ def validate_body(msg: str) -> str:
                     meaningful_errors = check_meaningful(
                         line_msg, i + 1, section)
                     prefix_errors = check_prefix(line_msg, i + 1, section)
+                    imperatives_errors = check_imperative_mode(
+                        line_msg, i + 1, section)
                     ending_errors = check_ending(line_msg, i + 1, section)
-                    errors += meaningful_errors + prefix_errors + ending_errors
+                    errors += meaningful_errors + prefix_errors + imperatives_errors + ending_errors
                 else:
-                    errors += f"{RED}error:\tmessage required [{section}: {i + 1}]{OFF}\n"
+                    errors += f"{RED}error:\tmessage required [message {section}: line {i + 1}]{OFF}\n"
     return errors
 
 
@@ -195,7 +191,7 @@ def remove_bullet(body_line: str) -> str:
     return content
 
 
-def check_meaningful(msg: str, line: int, section="") -> str:
+def check_meaningful(msg: str, line: int, section: str = "") -> str:
     """
     Check if a commit message less than 2 word.
 
@@ -210,17 +206,16 @@ def check_meaningful(msg: str, line: int, section="") -> str:
         str: The detected errors(empty in a case of no errors).
     """
     errors = ""
-    words = msg.strip().split()
-    # slice period at the end of the line
-    words = words[:-1] if words[-1].strip() == "." else words
+    words = msg.strip(string.punctuation)
     if len(words) < MIN_WORDS:
-        errors += f"{RED}error:\tone-word message is not informative, add more details [{section}: {line}]{OFF}\n"
+        errors += f"\
+{RED}error:\tone-word message is not informative, add more details [message {section}: line {line}]{OFF}\n"
     return errors
 
 
-def check_prefix(msg: str, line: int, section="") -> str:
+def check_prefix(msg: str, line: int, section: str = "") -> str:
     """
-    Validate the prefix of the message.
+    Check if the prefix of the message is correct casefold.
 
     If validation failed, generate an appropriate error message.
 
@@ -231,22 +226,43 @@ def check_prefix(msg: str, line: int, section="") -> str:
     Returns:
         str: The detected errors(empty in a case of no errors).
     """
-    global default_prefixes
     errors = ""
-    is_valid_prefix = msg.lstrip().lower().startswith(
-        tuple([prefix.lower() for prefix in default_prefixes]))
-    is_correct_casefold = msg.lstrip().startswith(
-        tuple([prefix for prefix in default_prefixes]))
-    if msg[0].islower():
-        errors += f"{RED}error:\tcapitalise the first word [{section}: {line}]{OFF}\n"
-    if not is_valid_prefix:
-        errors += f"{RED}error:\twrong prefix [{section}: {line}]{OFF}\n"
-    if is_valid_prefix and not is_correct_casefold:
-        errors += f"{RED}error:\twrong prefix case folding [{section}: {line}]{OFF}\n"
+    first_word = msg.split()[0].strip(string.punctuation)
+    if first_word[0].islower():
+        errors += f"\
+{RED}error:\tcapitalise the word {CAYAN}{first_word} {RED}[message {section}: line {line}]{OFF}\n"
+    if not first_word[1:].islower():
+        errors += f"{RED}error:\tthe word {CAYAN}{first_word}{RED} \
+must be in letter case and not in upper or mixed case [message {section}: line {line}]{OFF}\n"
     return errors
 
 
-def check_ending(msg: str, line: int, section="") -> str:
+def check_imperative_mode(msg: str, line: int, section: str = "", words_limit: int = 2) -> str:
+    """
+    Check the given msg for imperative mode.
+
+    Args:
+        msg (str): The part of commit mesage(subject line or body).
+        line (int): The line where the error occurred.
+        section (str, optional): The section where the error occurred. Defaults to empty string.
+        words_limit (int, optional): Check first `words_limit - 1` words of the given message. Defaults to 2.
+
+    Returns:
+        str: The detected errors(empty in a case of no errors).
+    """
+    errors = ""
+    words = nltk.word_tokenize(msg)
+    # VBZ : Verb, 3rd person singular present, like "adds", "writes" etc.
+    # VBD : Verb, Past tense , like "added", "wrote" etc.
+    # VBG : Verb, Present participle, like "adding", "writing" ect.
+    for word, tag in nltk.pos_tag(["I"]+words)[1:words_limit]:
+        if word.endswith("ing") or tag.startswith("VBZ") or tag.startswith("VBD") or tag.startswith("VBG"):
+            errors += f"\
+{RED}error:\tthe word {CAYAN}{word} {RED}must be in imperative mode [message {section}: line {line}]{OFF}\n"
+    return errors
+
+
+def check_ending(msg: str, line: int, section: str = "") -> str:
     """
     Check whether the message ends with a dot or not.
 
@@ -260,8 +276,9 @@ def check_ending(msg: str, line: int, section="") -> str:
         str: The detected errors(empty in a case of no errors).
     """
     errors = ""
-    if msg.rstrip().endswith("."):
-        errors += f"{RED}error:\tdo not end the line with a period [{section}: {line}]{OFF}\n"
+    if msg != msg.strip(string.punctuation):
+        errors += f"\
+{RED}error:\tdo not end the line with any punctuation character [message {section}: line {line}]{OFF}\n"
     return errors
 
 
