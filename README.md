@@ -46,10 +46,10 @@ pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git
 #### _Example_
 ```
 Refactor foo function in x file from y component
-< blank line >
-* Fix ...
-* Add ...
-* Update ...
+
+* Remove duplications
+* Add docstrings
+* Update the types of arguments
  ```
  ### Bypass the hook in one of the following ways
 - ```SKIP=commit-msg-hook git commit -m "Your message"```
