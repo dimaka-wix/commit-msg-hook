@@ -9,7 +9,6 @@ import argparse
 import sys
 
 import nltk
-from nltk.tokenize import word_tokenize
 
 import string
 
@@ -261,6 +260,4 @@ error:\tdo not end the line  {GREEN}{ITALIC}{msg}{RED}  with any punctuation cha
 
 
 if __name__ == "__main__":
-    msg = "Testing .\n Adds a ?\n print"
-    run_hook(msg)
     exit(main())
