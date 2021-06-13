@@ -262,6 +262,4 @@ def check_ending(msg: str, line: int, section: str = "") -> str:
 
 
 if __name__ == "__main__":
-    msg = "Testing a."
-    run_hook(msg)
     exit(main())
