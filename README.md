@@ -34,17 +34,19 @@ pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git
 
 * _Write up to **72** characters(preventing ellipsis in git)_
 * _Capitalize the subject line_
-* _Do not end the subject line with any punctuation character_
-* _Use the imperative mood(e.g. **Add** instead of **Added** or **Adds**)_
+* _Use the imperative mood(e.g. **Add** instead of **Added**, **Adds** or **Adding**)_
+* _Do not end the lines with any punctuation character_
 * _Use the description to explain what and why vs how_
-* _Press **Shift+Enter** to create a new line and to write more characters then vscode lets you_
-* _**Separate subject from body with a blank line!**_
+* _In case of multiline message do the following:_
+  * _Press **Shift+Enter** to create a new line and to write more characters then vscode lets you_
+  * _Separate subject line from message body with a blank line_
+  * _Follow the rules above when writing each line of the message_
 
 
 #### Example
 ```
-Refactor Z function in X file from Y component
-
+Refactor foo function in x file from y component
+<blank line>
 * Fix ...
 * Add ...
 * Update ...
