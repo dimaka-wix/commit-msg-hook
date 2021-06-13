@@ -1,6 +1,5 @@
 """
 This is an commit-msg stage hook.
-
 It is made as a custom plugin under the https://pre-commit.com
 hook framework and checks if commit message matches
 the chaos-hub team commit rules.
@@ -16,9 +15,11 @@ import string
 
 try:
     nltk.data.find("tokenizers/punkt")
-    nltk.data.find("taggers/averaged_perceptron_tagger")
 except LookupError:
     nltk.download("punkt")
+try:
+    nltk.data.find("taggers/averaged_perceptron_tagger")
+except LookupError:
     nltk.download("averaged_perceptron_tagger")
 
 OFF = "\033[0m"
@@ -57,7 +58,6 @@ hint:\tto read chaos-hum team rules visit: {BLUE}{GITHUB_LINK}{OFF}\n"
 def main():
     """
     Perform validations of the commit message.
-
     Extract arguments from command line and run the hook logic
     """
     parser = argparse.ArgumentParser()
@@ -74,13 +74,10 @@ def main():
 def read_msg(path: str) -> str:
     """
     Extract commit message content.
-
     Try to read the message on the given path.
     If fail, abort commit(exit nonzero), display appropriate error and hint
-
     Args:
         path (str): The path of the file with commit message
-
     Returns:
         str: The commit message.
     """
@@ -98,10 +95,8 @@ hint:\tthe commit message is usually saved in {COMMIT_EDITMSG}{OFF}\n")
 def run_hook(msg: str):
     """
     Run the main logic of the hook.
-
     If one of the validations failed, abort commit(exit nonzero), display appropriate errors and hints.
     Otherwise exit zero and allow the `git commit` command.
-
     Args:
         msg (str): The commit message to validate.
     """
@@ -117,9 +112,7 @@ def run_hook(msg: str):
 def validate_subj_line(msg: str) -> str:
     """
     Validate the subject line of a commit message.
-
     Slice subject line of commit message and validate it according to chaos-hub team commit rules
-
     Args:
         msg (str): The commit message
     Returns:
@@ -139,9 +132,7 @@ def validate_subj_line(msg: str) -> str:
 def validate_body(msg: str) -> str:
     """
     Validate the body of a commit message.
-
     Slice body of commit message and validate it according to chaos-hub team commit rules.
-
     Args:
         msg (str): The commit message
     Returns:
@@ -173,12 +164,9 @@ def validate_body(msg: str) -> str:
 def remove_bullet(body_line: str) -> str:
     """
     Remove line bullet if exist.
-
     Ex: get `* Fix bugs` return `Fix bugs`.
-
     Args:
         body_line (str): The single line of message body.
-
     Returns:
         str: The message without non-alpha characters at the beginning of the line.
     """
@@ -194,14 +182,11 @@ def remove_bullet(body_line: str) -> str:
 def check_meaningful(msg: str, line: int, section: str = "") -> str:
     """
     Check if a commit message less than 2 word.
-
     If message contains less than 2 words, generate an appropriate error message.
-
     Args:
         msg (str): The part of commit mesage(subject line or body).
         line (int): The line where the error occurred.
         section (str, optional): The section where the error occurred. Defaults to empty string.
-
     Returns:
         str: The detected errors(empty in a case of no errors).
     """
@@ -216,9 +201,7 @@ def check_meaningful(msg: str, line: int, section: str = "") -> str:
 def check_prefix(msg: str, line: int, section: str = "") -> str:
     """
     Check if the prefix of the message is correct casefold.
-
     If validation failed, generate an appropriate error message.
-
     Args:
         msg (str): The part of commit mesage(subject line or body).
         line (int): The line where the error occurred.
@@ -240,13 +223,11 @@ must be in letter case and not in upper or mixed case [message {section}: line {
 def check_imperative_mode(msg: str, line: int, section: str = "", words_limit: int = 2) -> str:
     """
     Check the given msg for imperative mode.
-
     Args:
         msg (str): The part of commit mesage(subject line or body).
         line (int): The line where the error occurred.
         section (str, optional): The section where the error occurred. Defaults to empty string.
         words_limit (int, optional): Check first `words_limit - 1` words of the given message. Defaults to 2.
-
     Returns:
         str: The detected errors(empty in a case of no errors).
     """
@@ -265,9 +246,7 @@ def check_imperative_mode(msg: str, line: int, section: str = "", words_limit: i
 def check_ending(msg: str, line: int, section: str = "") -> str:
     """
     Check whether the message ends with a dot or not.
-
     If the message ends with a dot, generate an appropriate error message.
-
     Args:
         msg (str): The part of commit mesage(subject line or body).
         line (int): The line where the error occurred.
