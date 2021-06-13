@@ -30,7 +30,7 @@ pre-commit install --hook-type commit-msg
 ```
 pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git
 ```
-### Commit Rules
+### _Commit Rules_
 
 * _Write up to **72** characters(preventing ellipsis in git)_
 * _Capitalize the subject line_
@@ -43,10 +43,10 @@ pre-commit autoupdate --repo https://github.com/dimaka-wix/commit-msg-hook.git
   * _Follow the rules above when writing each line of the message_
 
 
-#### Example
+#### _Example_
 ```
 Refactor foo function in x file from y component
-<blank line>
+                < blank line >
 * Fix ...
 * Add ...
 * Update ...
