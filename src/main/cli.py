@@ -122,7 +122,7 @@ def validate_subj_line(msg: str) -> str:
     section = "subject"
     meaningful_errors = check_meaningful(subject)
     prefix_errors = check_prefix(subject)
-    imperatives_errors = check_imperative_mode(subject)
+    imperatives_errors = check_for_imperative(subject)
     ending_errors = check_ending(subject)
     errors = meaningful_errors + prefix_errors + imperatives_errors + ending_errors
     return errors
@@ -151,7 +151,7 @@ def validate_body(msg: str) -> str:
                 if line_msg:
                     meaningful_errors = check_meaningful(line_msg)
                     prefix_errors = check_prefix(line_msg)
-                    imperatives_errors = check_imperative_mode(line_msg)
+                    imperatives_errors = check_for_imperative(line_msg)
                     ending_errors = check_ending(line_msg)
                     errors += meaningful_errors + prefix_errors + imperatives_errors + ending_errors
                 else:
@@ -219,8 +219,8 @@ error:\tthe word  {GREEN}{ITALIC}{first_word}{RED}  must be in letter case and n
     return errors
 
 
-def check_imperative_mode(msg: str, words_limit: int = 2) -> str:
-    """Check the given msg for imperative mode.
+def check_for_imperative(msg: str, words_limit: int = 2) -> str:
+    """Check the given msg for imperative mood.
 
     Args:
         msg (str): The part of commit mesage(subject line or body).
@@ -237,7 +237,7 @@ def check_imperative_mode(msg: str, words_limit: int = 2) -> str:
     for word, tag in nltk.pos_tag(["I"]+words)[1:words_limit]:
         if word.endswith("ing") or tag.startswith("VBZ") or tag.startswith("VBD") or tag.startswith("VBG"):
             errors += f"\n{RED}\
-error:\tthe word  {GREEN}{ITALIC}{word}{RED}  must be in imperative mode{OFF}\n"
+error:\tthe word  {GREEN}{ITALIC}{word}{RED}  must be in imperative mood{OFF}\n"
     return errors
 
 
