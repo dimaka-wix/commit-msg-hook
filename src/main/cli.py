@@ -6,11 +6,10 @@ the chaos-hub team commit rules.
 """
 
 import argparse
+import string
 import sys
 
 import nltk
-
-import string
 
 try:
     nltk.data.find("tokenizers/punkt")
@@ -80,6 +79,8 @@ def read_msg(path: str) -> str:
     try:
         with open(path, "r", encoding="utf-8") as file:
             msg = file.read()
+            # cut the commented text
+            msg = msg.split("#", 1)[0]
     except FileNotFoundError:
         print(f"\n{RED}\
 error:\tthe path  {CAYAN}{path}  not found!\n{YELLOW}\
