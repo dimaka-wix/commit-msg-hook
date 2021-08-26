@@ -49,7 +49,8 @@ HINT = f"\n{YELLOW}hint:\tto read chaos-hum team rules visit:  {BLUE}{GITHUB_LIN
 
 
 def main():
-    """Perform validations of the commit message.
+    """
+    Perform validations of the commit message.
 
     Extract arguments from command line and run the hook logic
     """
@@ -65,14 +66,14 @@ def main():
 
 
 def read_msg(path: str) -> str:
-    """Extract commit message content.
+    """
+    Extract commit message content.
 
     Try to read the message on the given path.
     If fail, abort commit(exit nonzero), display appropriate error and hint
 
     Args:
         path (str): The path of the file with commit message
-
     Returns:
         str: The commit message.
     """
@@ -90,7 +91,8 @@ hint:\tthe commit message is usually saved in  {CAYAN}{COMMIT_EDITMSG}{OFF}\n")
 
 
 def run_hook(msg: str):
-    """Run the main logic of the hook.
+    """
+    Run the main logic of the hook.
 
     If one of the validations failed, abort commit(exit nonzero), display appropriate errors and hints.
     Otherwise exit zero and allow the `git commit` command.
@@ -108,19 +110,17 @@ def run_hook(msg: str):
 
 
 def validate_subj_line(msg: str) -> str:
-    """Validate the subject line of a commit message.
+    """
+    Validate the subject line of a commit message.
 
     Slice subject line of commit message and validate it according to chaos-hub team commit rules
 
     Args:
         msg (str): The commit message
-
     Returns:
         str: The detected errors(empty in a case of no errors)
     """
-    line = 1
     subject = msg.splitlines()[0]
-    section = "subject"
     meaningful_errors = check_meaningful(subject)
     prefix_errors = check_prefix(subject)
     imperatives_errors = check_for_imperative(subject)
