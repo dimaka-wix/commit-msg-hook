@@ -45,7 +45,7 @@ MIN_WORDS = 2
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
 GITHUB_LINK = "https://github.com/dimaka-wix/commit-msg-hook/blob/main/README.md#commit-rules"
 
-HINT = f"\n{YELLOW}hint:\tto read about the convention, visit: {BLUE}{GITHUB_LINK}{OFF}\n"
+HINT = f"\n{YELLOW}hint:\tread the convention on: {BLUE}{GITHUB_LINK}{OFF}\n"
 
 
 def main():

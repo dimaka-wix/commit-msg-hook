@@ -17,7 +17,7 @@ pip install pre-commit
 ### Create a file ```.pre-commit-config.yaml``` in the root folder with the following configuration
 ```
 - repo: https://github.com/dimaka-wix/commit-msg-hook.git
-  rev: v0.3.3
+  rev: v0.3.4
   hooks:
     - id: commit-msg-hook
       stages: [commit-msg]
