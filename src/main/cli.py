@@ -45,7 +45,7 @@ MIN_WORDS = 2
 COMMIT_EDITMSG = ".git/COMMIT_EDITMSG"
 GITHUB_LINK = "https://github.com/dimaka-wix/commit-msg-hook/blob/main/README.md#commit-rules"
 
-HINT = f"\n{YELLOW}hint:\tto read chaos-hum team rules visit:  {BLUE}{GITHUB_LINK}{OFF}\n"
+HINT = f"\n{YELLOW}hint:\tto read about the convention, visit: {BLUE}{GITHUB_LINK}{OFF}\n"
 
 
 def main():
@@ -85,7 +85,7 @@ def read_msg(path: str) -> str:
     except FileNotFoundError:
         print(f"\n{RED}\
 error:\tthe path  {CAYAN}{path}  not found!\n{YELLOW}\
-hint:\tthe commit message is usually saved in  {CAYAN}{COMMIT_EDITMSG}{OFF}\n")
+hint:\tthe commit message is usually stored in  {CAYAN}{COMMIT_EDITMSG}{OFF}\n")
         sys.exit(1)
     return msg
 
